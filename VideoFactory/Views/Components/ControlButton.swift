@@ -12,10 +12,8 @@ struct ControlButton: View {
             Image(systemName: systemName)
                 .frame(width: 20, height: 20)
                 .foregroundStyle(.white)
-                .padding(6)
-                .background(isHovered ? Color.white.opacity(0.2) : Color.white.opacity(0.1))
-                .cornerRadius(4)
                 .contentShape(Rectangle())
+                .opacity(isHovered ? 0.7 : 1.0)
         }
         .buttonStyle(.plain)
         .onHover { hovering in
@@ -27,4 +25,10 @@ struct ControlButton: View {
             }
         }
     }
+}
+
+#Preview {
+    VStack {
+        ControlButton(systemName: "speaker.wave.3") { }.background(.black)
+    }.frame(width: 100, height: 100)
 }

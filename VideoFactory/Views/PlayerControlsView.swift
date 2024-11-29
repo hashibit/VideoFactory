@@ -4,8 +4,8 @@ struct PlayerControlsView: View {
     @State private var volume: Double = 0.5
     @State private var progress: Double = 0.0
     @State private var isPlaying = false
-    @State private var currentTime = "00:00"
-    @State private var totalTime = "00:00"
+    @State private var currentTime = "00:00:00"
+    @State private var totalTime = "02:00:00"
 
     var body: some View {
         VStack(spacing: 8) {
@@ -13,13 +13,14 @@ struct PlayerControlsView: View {
             HStack(spacing: 0) {
                 // 左侧音量控制
                 HStack(spacing: 8) {
+
                     ControlButton(systemName: "speaker.wave.2.fill") { }
+
                     Rectangle()
                         .fill(.clear)
-                        .frame(width: 80)
                         .volumeSliderStyle(value: $volume, range: 0...1)
+                        .frame(width: 80)
                 }
-                .frame(width: 120)
 
                 Spacer()
 
@@ -39,19 +40,19 @@ struct PlayerControlsView: View {
                 Spacer()
 
                 // 右侧设置按钮
-                HStack(spacing: 16) {
+                HStack(spacing: 10) {
                     ControlButton(systemName: "photo") { }
                     ControlButton(systemName: "speaker.wave.3") { }
                     ControlButton(systemName: "text.bubble") { }
                 }
-                .frame(width: 120)
+
             }
 
             // 第二行控制器
-            HStack(spacing: 8) {
+            HStack(spacing: 16) {
                 Text(currentTime)
                     .foregroundColor(.white)
-                    .frame(width: 60)
+                    .frame(alignment: .leading)
 
                 Rectangle()
                     .fill(.clear)
@@ -59,13 +60,20 @@ struct PlayerControlsView: View {
 
                 Text(totalTime)
                     .foregroundColor(.white)
-                    .frame(width: 60)
+                    .frame(alignment: .trailing)
             }
         }
         .frame(width: 500)
-        .padding(12)
+        .padding(10)
         .background(Color.gray.opacity(0.3))
         .cornerRadius(8)
-        .padding(.bottom, 10)
     }
+}
+
+
+
+#Preview {
+    VStack {
+        PlayerControlsView().background(.black)
+    }.frame(width: 800, height: 600)
 }

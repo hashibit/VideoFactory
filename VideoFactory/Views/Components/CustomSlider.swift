@@ -27,7 +27,7 @@ struct VolumeSliderStyle: ViewModifier {
                     }
             )
         }
-        .frame(height: 12)
+        .frame(height: 0)
     }
 }
 
