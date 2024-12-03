@@ -1,6 +1,9 @@
 import SwiftUI
 
 struct MainWindowView: View {
+    @State
+    var windowIsResizing: Bool = false
+    
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
@@ -8,14 +11,15 @@ struct MainWindowView: View {
             VStack(spacing: 0) {
                 Text("视频标题")
                     .foregroundColor(.white)
-                    .padding(.top, 10)
+                    .padding(10)
                     .frame(width: 500)
-                    .background(Color.gray.opacity(0.3))
+                    .background(Color.gray.opacity(0.5))
                     .cornerRadius(8)
 
-                VideoPlayerView()
+                Spacer()
 
                 PlayerControlsView()
+                    .padding(20)
             }
         }
     }

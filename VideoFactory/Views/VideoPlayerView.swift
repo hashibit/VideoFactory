@@ -12,10 +12,8 @@ struct VideoPlayerView: View {
     }
 
     var body: some View {
-        VideoPlayer(player: player)
-            .frame(width: 1280, height: 720)
-            .onAppear {
-                player.play()
-            }
+        VStack {
+            
+        }
     }
 }
