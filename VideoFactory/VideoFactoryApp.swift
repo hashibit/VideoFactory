@@ -38,6 +38,9 @@ struct VideoFactoryApp: App {
 
                 }
                 .background(.blue)
+            }.onChange(of: isResizing) { oldValue, newValue in
+                print("Resizing value: \(newValue)")
+//                videoLayer.inLiveResize = newValue
             }
         }
         .windowStyle(.hiddenTitleBar)
