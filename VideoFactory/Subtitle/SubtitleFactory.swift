@@ -26,7 +26,7 @@ class SubtitleFactory {
     
     // transcribe return a cancellable task
     func transcribe(videoFilePath: String, onFinished: @escaping (String) -> Void) -> Result<FactoryTask, Error> {
-        if let _ = transcribeTask {
+        if transcribeTask != nil {
             return .failure(FactoryError.taskAlreadyRunning)
         }
         
@@ -43,7 +43,7 @@ class SubtitleFactory {
     }
     
     func translate(subFilePath: String, onFinished: @escaping (String) -> Void) -> Result<FactoryTask, Error> {
-        if let _ = translateTask {
+        if translateTask != nil {
             return .failure(FactoryError.taskAlreadyRunning)
         }
         
@@ -98,6 +98,7 @@ class SubtitleFactory {
             await processExited
             
             return String(data: outputData, encoding: .utf8) ?? ""
+            
         } catch {
             print("failed to run process: \(error.localizedDescription)")
             return ""
