@@ -7,6 +7,8 @@ struct PlayerControlsView: View {
     @State private var currentTime = "00:00:00"
     @State private var totalTime = "02:00:00"
 
+    let controller = MpvController.shared
+
     var body: some View {
         VStack(spacing: 8) {
             // 第一行控制器
@@ -28,7 +30,7 @@ struct PlayerControlsView: View {
                         // 后退逻辑
                     }
                     ControlButton(systemName: isPlaying ? "pause.fill" : "play.fill") {
-                        isPlaying.toggle()
+                        controller.toggle()
                     }
                     ControlButton(systemName: "forward.fill") {
                         // 前进逻辑

@@ -13,7 +13,7 @@ struct VideoPlayerView: View {
 
     var body: some View {
         VStack {
-            
+
         }
     }
 }
