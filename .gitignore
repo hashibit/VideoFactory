@@ -1,3 +1,4 @@
 buildServer.json
 VideoFactory.xcodeproj/project.xcworkspace/xcuserdata
 *.xcuserstate
+*xcuserdata*
