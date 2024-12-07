@@ -305,6 +305,10 @@ extension VideoLayer {
         }
     }
 
+}
+
+extension VideoLayer {
+
     private func nodeToValue(_ node: inout mpv_node) -> Any? {
         switch node.format {
         case MPV_FORMAT_STRING:
@@ -354,12 +358,11 @@ extension VideoLayer {
                 let keysBuffer = UnsafeBufferPointer(start: list.keys, count: Int(list.num))
                 let valsBuffer = UnsafeBufferPointer(start: list.values, count: Int(list.num))
                 for i in 0 ..< keysBuffer.count {
-                    if let keyItem = keysBuffer[i] {
-                        let keyString = String(cString: keyItem, encoding: .utf8)!
-                        var nodeItem = valsBuffer[i]
-                        if let val = nodeToValue(&nodeItem) {
-                            result[keyString] = val
-                        }
+                    guard let keyItem = keysBuffer[i] else {continue}
+                    var valItem = valsBuffer[i]
+                    let keyString = String(cString: keyItem, encoding: .utf8)!
+                    if let val = nodeToValue(&valItem) {
+                        result[keyString] = val
                     }
                 }
                 return result
@@ -386,6 +389,10 @@ extension VideoLayer {
             v.withCString { strPtr in
                 node.u.string = strdup(strPtr)
             }
+        case let v as [Any]:
+            break
+        case let v as [String: Any]:
+            break
         default:
             node.format = MPV_FORMAT_NONE
         }
