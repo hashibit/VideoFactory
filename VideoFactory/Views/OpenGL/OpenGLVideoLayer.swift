@@ -268,7 +268,7 @@ extension VideoLayer {
             mpv_free_node_contents(&node)
         }
 
-        setNode(nodePtr: &node, value: value)
+        setNode(&node, value)
         property.withCString { propertyPtr in
             checkError(mpv_set_property(self.mpv, propertyPtr, MPV_FORMAT_NODE, &node))
         }
@@ -280,7 +280,7 @@ extension VideoLayer {
             mpv_free_node_contents(&node)
         }
 
-        setNode(nodePtr: &node, value: value)
+        setNode(&node, value)
         property.withCString { propertyPtr in
             checkError(mpv_set_property_async(self.mpv, id, propertyPtr, MPV_FORMAT_NODE, &node))
         }
@@ -296,13 +296,7 @@ extension VideoLayer {
             checkError(mpv_get_property(self.mpv, propertyPtr, MPV_FORMAT_NODE, &node))
         }
 
-        if let value = nodeToValue(nodePtr: &node) {
-            return value as? T
-        } else {
-            print("nodeToValue failed.")
-        }
-
-        return nil
+        return nodeToValue(&node) as? T
     }
 
     func mpvGetPropertyAsync(property: String, asyncID: AsyncID) {
@@ -311,8 +305,7 @@ extension VideoLayer {
         }
     }
 
-    private func nodeToValue(nodePtr: UnsafePointer<mpv_node>) -> Any? {
-        let node = nodePtr.pointee
+    private func nodeToValue(_ node: inout mpv_node) -> Any? {
         switch node.format {
         case MPV_FORMAT_STRING:
             return String(cString: node.u.string, encoding: .utf8)
@@ -321,31 +314,27 @@ extension VideoLayer {
         case MPV_FORMAT_DOUBLE:
             return node.u.double_
         case MPV_FORMAT_NODE_ARRAY:
-            return nodeToArray(nodePtr: nodePtr)
+            return nodeToArray(&node)
         case MPV_FORMAT_NODE_MAP:
-            return nodeToMap(nodePtr: nodePtr)
+            return nodeToMap(&node)
         case MPV_FORMAT_NONE:
             print("mpv node format is none, failed to get property")
-            break
         default:
             break
         }
         return nil
     }
 
-    private func nodeToArray(nodePtr: UnsafePointer<mpv_node>) -> [Any]? {
-        let node = nodePtr.pointee
+    private func nodeToArray(_ node: inout mpv_node) -> [Any]? {
         switch node.format {
         case MPV_FORMAT_NODE_ARRAY:
             var result: [Any] = []
             if let listPtr = node.u.list {
                 let list = listPtr.pointee
                 let buffer = UnsafeBufferPointer(start: list.values, count: Int(list.num))
-                for nodeItem in buffer {
-                    withUnsafePointer(to: nodeItem) { nodePtr in
-                        if let value = nodeToValue(nodePtr: UnsafePointer(nodePtr))  {
-                            result.append(value)
-                        }
+                for var nodeItem in buffer {
+                    if let value = nodeToValue(&nodeItem)  {
+                        result.append(value)
                     }
                 }
                 return result
@@ -356,8 +345,7 @@ extension VideoLayer {
         return nil
     }
 
-    private func nodeToMap(nodePtr: UnsafePointer<mpv_node>) -> [String: Any]? {
-        let node = nodePtr.pointee
+    private func nodeToMap(_ node: inout mpv_node) -> [String: Any]? {
         switch node.format {
         case MPV_FORMAT_NODE_MAP:
             var result: [String: Any] = [:]
@@ -368,11 +356,9 @@ extension VideoLayer {
                 for i in 0 ..< keysBuffer.count {
                     if let keyItem = keysBuffer[i] {
                         let keyString = String(cString: keyItem, encoding: .utf8)!
-                        let valItem = valsBuffer[i]
-                        withUnsafePointer(to: valItem) { valPtr in
-                            if let val = nodeToValue(nodePtr: UnsafePointer(valPtr)) {
-                                result[keyString] = val
-                            }
+                        var nodeItem = valsBuffer[i]
+                        if let val = nodeToValue(&nodeItem) {
+                            result[keyString] = val
                         }
                     }
                 }
@@ -384,29 +370,24 @@ extension VideoLayer {
         return nil
     }
 
-    private func setNode<T>(nodePtr: UnsafeMutablePointer<mpv_node>, value: T) {
-        switch T.self {
-        case is Double.Type:
-            nodePtr.pointee.format = MPV_FORMAT_DOUBLE
-            nodePtr.pointee.u.double_ = value as! Double
-            break
-        case is Int64.Type:
-            nodePtr.pointee.format = MPV_FORMAT_INT64
-            nodePtr.pointee.u.int64 = value as! Int64
-            break
-        case is Bool.Type:
-            nodePtr.pointee.format = MPV_FORMAT_FLAG
-            nodePtr.pointee.u.flag = (value as! Bool) ? 1 : 0
-            break
-        case is String.Type:
-            nodePtr.pointee.format = MPV_FORMAT_STRING
-            (value as! String).withCString { strPtr in
-                nodePtr.pointee.u.string = strdup(strPtr)
+    private func setNode(_ node: inout mpv_node, _ value: Any) {
+        switch value {
+        case let v as Double:
+            node.format = MPV_FORMAT_DOUBLE
+            node.u.double_ = v
+        case let v as Int64:
+            node.format = MPV_FORMAT_INT64
+            node.u.int64 = v
+        case let v as Bool:
+            node.format = MPV_FORMAT_FLAG
+            node.u.flag = v ? 1 : 0
+        case let v as String:
+            node.format = MPV_FORMAT_STRING
+            v.withCString { strPtr in
+                node.u.string = strdup(strPtr)
             }
-            break
         default:
-            nodePtr.pointee.format = MPV_FORMAT_NONE
-            break
+            node.format = MPV_FORMAT_NONE
         }
     }
 
