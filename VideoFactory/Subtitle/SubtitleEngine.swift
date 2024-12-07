@@ -14,22 +14,23 @@ enum FactoryError: Error {
 // 10min
 let timeout = 60 * 10
 
-class SubtitleFactory {
-    static let shared = SubtitleFactory();
-    
+class SubtitleEngine {
+
+    static let shared = SubtitleEngine();
+
     typealias FactoryTask = Task<Void, Error>
-    
+
     private var transcribeTask : FactoryTask?
     private var translateTask : FactoryTask?
 
     private init() { }
-    
+
     // transcribe return a cancellable task
     func transcribe(videoFilePath: String, onFinished: @escaping (String) -> Void) -> Result<FactoryTask, Error> {
         if transcribeTask != nil {
             return .failure(FactoryError.taskAlreadyRunning)
         }
-        
+
         transcribeTask = Task {
             do {
                 try Task.checkCancellation()
@@ -41,12 +42,12 @@ class SubtitleFactory {
         }
         return .success(transcribeTask!)
     }
-    
+
     func translate(subFilePath: String, onFinished: @escaping (String) -> Void) -> Result<FactoryTask, Error> {
         if translateTask != nil {
             return .failure(FactoryError.taskAlreadyRunning)
         }
-        
+
         translateTask = Task {
             do {
                 try Task.checkCancellation()
@@ -58,15 +59,15 @@ class SubtitleFactory {
         }
         return .success(translateTask!)
     }
-    
+
     private func runTranscribe() async -> String {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/bin/ls")
         process.arguments = ["/"]
-        
+
         let pipe = Pipe()
         process.standardOutput = pipe
-        
+
         do {
             try process.run()
             DispatchQueue.global().asyncAfter(deadline: .now() + TimeInterval(timeout)) {
@@ -74,7 +75,7 @@ class SubtitleFactory {
                     process.terminate()
                 }
             }
-            
+
             async let processExited: Void = withCheckedContinuation { continuation in
                 process.terminationHandler = { _ in
                     continuation.resume()
@@ -96,13 +97,13 @@ class SubtitleFactory {
             }
 
             await processExited
-            
+
             return String(data: outputData, encoding: .utf8) ?? ""
-            
+
         } catch {
             print("failed to run process: \(error.localizedDescription)")
             return ""
         }
     }
-    
+
 }

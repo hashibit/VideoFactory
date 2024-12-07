@@ -8,15 +8,14 @@
 import Foundation
 import SwiftData
 
-
 @Model
 class VideoModel {
-    var id: Int
-    var parentId: Int
+    var id: UUID
+    var parentID: UUID
     var origin: String
-    var movieID: Int
+    var movieID: UUID
     var filepath: String
-    var trackID: String
+    var trackID: UUID
     var hash: String
     var filesize: Int64
     var encMethod: String
@@ -26,9 +25,11 @@ class VideoModel {
     var updatedAt: Date
     var deletedAt: Date
 
-    init(id: Int, parentId: Int, origin: String, movieID: Int, filepath: String, trackID: String, hash: String, filesize: Int64, encMethod: String, language: String, duration: Int, createdAt: Date, updatedAt: Date, deletedAt: Date) {
+    init(id: UUID, parentID: UUID, origin: String, movieID: UUID, filepath: String, trackID: UUID,
+         hash: String, filesize: Int64, encMethod: String, language: String, duration: Int,
+         createdAt: Date = Date(), updatedAt: Date = Date(), deletedAt: Date = Date()) {
         self.id = id
-        self.parentId = parentId
+        self.parentID = parentID
         self.origin = origin
         self.movieID = movieID
         self.filepath = filepath
@@ -43,10 +44,24 @@ class VideoModel {
         self.deletedAt = deletedAt
     }
 
-    static func createEmbededSubTrack(movieId: Int, trackId: String) -> VideoModel {
+    convenience init() {
+        self.init(id: UUID(),
+                  parentID: UUID(),
+                  origin: "",
+                  movieID: UUID(),
+                  filepath: "",
+                  trackID: UUID(),
+                  hash: "",
+                  filesize: 0,
+                  encMethod: "",
+                  language: "",
+                  duration: 0)
+    }
+
+    static func createEmbededSubTrack(movieId: UUID, trackId: UUID) -> VideoModel {
         return VideoModel(
-            id: 0,
-            parentId: 0,
+            id: UUID(),
+            parentID: UUID(),
             origin: "embeded",
             movieID: movieId,
             filepath: "",
@@ -62,19 +77,19 @@ class VideoModel {
         )
     }
 
-    static func createFromFilepath(movieId: Int, filepath: String) -> VideoModel {
+    static func createFromFilepath(movieId: UUID, filepath: String) -> VideoModel {
         return createFromFilepath(movieId: movieId, filepath: filepath, origin: "unset")
     }
 
-    static func createFromFilepath(movieId: Int, filepath: String, origin: String) -> VideoModel {
+    static func createFromFilepath(movieId: UUID, filepath: String, origin: String) -> VideoModel {
         let hash = generateHash(filepath) ?? ""
         return VideoModel(
-            id: 0,
-            parentId: 0,
+            id: UUID(),
+            parentID: UUID(),
             origin: origin,
             movieID: movieId,
             filepath: filepath,
-            trackID: "",
+            trackID: UUID(),
             hash: hash,
             filesize: 0,
             encMethod: "",
@@ -88,8 +103,10 @@ class VideoModel {
 
     func copy(from source: VideoModel) {
         self.id = source.id
-        self.parentId = source.parentId
+        self.parentID = source.parentID
         self.origin = source.origin
+        self.movieID = source.movieID
+        self.filepath = source.filepath
         self.trackID = source.trackID
         self.filesize = source.filesize
         self.hash = source.hash

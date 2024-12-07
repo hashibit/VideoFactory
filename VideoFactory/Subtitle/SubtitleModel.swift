@@ -8,7 +8,6 @@
 import Foundation
 import SwiftData
 
-
 enum SubtitleOrigin: String {
     case transcribe
     case translate
@@ -17,14 +16,14 @@ enum SubtitleOrigin: String {
 @Model
 class SubtitleModel {
 
-    var id: Int
-    var parentId: Int
+    var id: UUID
+    var parentID: UUID
     var origin: String
-    var movieID: Int
+    var movieID: UUID
     var filepath: String
-    var trackID: String
+    var trackID: UUID
     var hash: String
-    var filesize: Int64
+    var filesize: Int
     var encMethod: String
     var language: String
     var duration: Int
@@ -32,9 +31,11 @@ class SubtitleModel {
     var updatedAt: Date
     var deletedAt: Date
 
-    init(id: Int, parentId: Int, origin: String, movieID: Int, filepath: String, trackID: String, hash: String, filesize: Int64, encMethod: String, language: String, duration: Int, createdAt: Date, updatedAt: Date, deletedAt: Date) {
+    init(id: UUID, parentID: UUID, origin: String, movieID: UUID, filepath: String, trackID: UUID,
+         hash: String, filesize: Int, encMethod: String, language: String, duration: Int,
+         createdAt: Date = Date(), updatedAt: Date = Date(), deletedAt: Date = Date()) {
         self.id = id
-        self.parentId = parentId
+        self.parentID = parentID
         self.origin = origin
         self.movieID = movieID
         self.filepath = filepath
@@ -47,5 +48,33 @@ class SubtitleModel {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.deletedAt = deletedAt
+    }
+
+    convenience init() {
+        self.init(id : UUID(),
+                  parentID : UUID(),
+                  origin : "",
+                  movieID : UUID(),
+                  filepath : "",
+                  trackID : UUID(),
+                  hash : "",
+                  filesize : 0,
+                  encMethod : "",
+                  language : "",
+                  duration : 0
+        )
+    }
+
+    func copy(from: SubtitleModel) {
+        self.parentID = from.parentID
+        self.origin = from.origin
+        self.movieID = from.movieID
+        self.filepath = from.filepath
+        self.trackID = from.trackID
+        self.hash = from.hash
+        self.filesize = from.filesize
+        self.encMethod = from.encMethod
+        self.language = from.language
+        self.duration = from.duration
     }
 }
