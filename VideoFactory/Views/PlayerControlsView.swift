@@ -15,7 +15,9 @@ struct PlayerControlsView: View {
             HStack(spacing: 0) {
                 // 左侧音量控制
                 HStack(spacing: 8) {
-                    ControlButton(systemName: "speaker.wave.2.fill") { }
+                    ControlButton(systemName: "speaker.wave.2.fill") {
+                        controller.getVolumn()
+                    }
                     Rectangle()
                         .fill(.clear)
                         .volumeSliderStyle(value: $volume, range: 0...1)

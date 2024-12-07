@@ -11,8 +11,7 @@ import OpenGL.GL3
 
 func getProcAddress(_ ctx: UnsafeMutableRawPointer?,
                     _ name: UnsafePointer<Int8>?) -> UnsafeMutableRawPointer? {
-    let symbol: CFString = CFStringCreateWithCString(
-        kCFAllocatorDefault, name, kCFStringEncodingASCII)
+    let symbol: CFString = CFStringCreateWithCString(kCFAllocatorDefault, name, kCFStringEncodingASCII)
     let indentifier = CFBundleGetBundleWithIdentifier("com.apple.opengl" as CFString)
     let addr = CFBundleGetFunctionPointerForName(indentifier, symbol)
 
@@ -23,11 +22,9 @@ func getProcAddress(_ ctx: UnsafeMutableRawPointer?,
 }
 
 func updateCallback(_ ctx: UnsafeMutableRawPointer?) {
-    let videoLayer = unsafeBitCast(ctx, to: VideoLayer.self)
-    videoLayer.queue.async {
-        if !videoLayer.isAsynchronous {
-            videoLayer.display()
-        }
+    let this = unsafeBitCast(ctx, to: VideoLayer.self)
+    this.queue.async {
+        this.display()
     }
 }
 
@@ -133,21 +130,13 @@ class VideoLayer: CAOpenGLLayer {
             exit(1)
         }
 
-        print("set option terminal")
         checkError(mpv_set_option_string(mpv, "terminal", "yes"))
-        print("set option input-media-keys")
         checkError(mpv_set_option_string(mpv, "input-media-keys", "yes"))
-        print("set option input-ipc-server")
         checkError(mpv_set_option_string(mpv, "input-ipc-server", "/tmp/mpvsocket"))
-        print("set option input-default-bindings")
         checkError(mpv_set_option_string(mpv, "input-default-bindings", "yes"))
-        print("set option config")
         checkError(mpv_set_option_string(mpv, "config", "yes"))
-        print("set option msg-level")
         checkError(mpv_set_option_string(mpv, "msg-level", "all=v"))
-        print("set option config-dir")
         checkError(mpv_set_option_string(mpv, "config-dir", NSHomeDirectory()+"/.config/mpv"))
-        print("set option vo")
         checkError(mpv_set_option_string(mpv, "vo", "opengl-cb"))
         //        print("set option display-fps")
         //        checkError(mpv_set_option_string(mpv, "display-fps", "60"))
@@ -175,23 +164,23 @@ class VideoLayer: CAOpenGLLayer {
                                                UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()))
 
         mpv_set_wakeup_callback(mpv, { (ctx) in
-            let mpvController = unsafeBitCast(ctx, to: VideoLayer.self)
-            mpvController.readEvents()
+            let this = unsafeBitCast(ctx, to: VideoLayer.self)
+            this.readEventsThread()
         }, UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()))
 
         if let filepath = self.currentFile {
             loadFile(filepath)
+            mpvGetPropertyAsync(property: MpvProperty.volume.rawValue, asyncID: AsyncID.volume)
         }
     }
 
     func uninitMPV() {
         let cmd = ["quit", nil]
-        mpvCommand(cmd: cmd, sync: true)
+        mpvCommand(cmd: cmd, blocking: true)
     }
 
     func tryLoadFile(_ filepath: String) {
         self.currentFile = filepath
-        // initialized
         if mpv != nil {
             loadFile(filepath)
         }
@@ -202,88 +191,6 @@ class VideoLayer: CAOpenGLLayer {
         mpvCommand(cmd: cmd)
     }
 
-    func mpvCommand(cmd: [String?], sync: Bool = false) {
-        // sync
-        if sync {
-            var args = cmd.map{ $0.flatMap{ UnsafePointer<Int8>(strdup($0)) } }
-            defer { args.compactMap { $0 }.forEach { free(UnsafeMutablePointer(mutating: $0)) } }
-            self.checkError(mpv_command(self.mpv, &args))
-            return
-        }
-        // async
-        queue.async {
-            var args = cmd.map{ $0.flatMap{ UnsafePointer<Int8>(strdup($0)) } }
-            defer { args.compactMap { $0 }.forEach { free(UnsafeMutablePointer(mutating: $0)) }}
-            self.checkError(mpv_command(self.mpv, &args))
-        }
-    }
-
-    func mpvSetPropertyAsync<T>(property: String, value: T, id: UInt64) {
-        var node = mpv_node()
-        node.format = MPV_FORMAT_NONE
-        defer {
-            if node.format == MPV_FORMAT_STRING {
-                free(UnsafeMutablePointer(mutating: node.u.string))
-            }
-        }
-
-        switch value {
-        case let value as String:
-            node.format = MPV_FORMAT_STRING
-            value.withCString { valuePtr in
-                node.u.string = strdup(value)
-            }
-        case let value as Bool:
-            node.format = MPV_FORMAT_FLAG
-            node.u.flag = value ? 1 : 0
-            break
-        case let value as Int64:
-            node.format = MPV_FORMAT_INT64
-            node.u.int64 = value
-            break
-        case let value as Double:
-            node.format = MPV_FORMAT_DOUBLE
-            node.u.double_ = value
-            break
-        default:
-            break
-        }
-
-        property.withCString { propertyPtr in
-            mpv_set_property_async(self.mpv, id, propertyPtr, MPV_FORMAT_NODE, &node)
-        }
-
-    }
-
-    private func readEvents() {
-        queue.async {
-            while self.mpv != nil {
-                let event = mpv_wait_event(self.mpv, 0)
-                if event!.pointee.event_id == MPV_EVENT_NONE {
-                    break
-                }
-                self.handleEvent(event)
-            }
-        }
-    }
-
-    private func handleEvent(_ event: UnsafePointer<mpv_event>!) {
-        switch event.pointee.event_id {
-        case MPV_EVENT_SHUTDOWN:
-            mpv_render_context_free(mpvRenderContext)
-            mpvRenderContext = nil
-            mpv_terminate_destroy(mpv)
-            mpv = nil
-            NSApp.terminate(self)
-        case MPV_EVENT_LOG_MESSAGE:
-            let logmsg = UnsafeMutablePointer<mpv_event_log_message>(OpaquePointer(event.pointee.data))
-            print("log:", String(cString: (logmsg!.pointee.prefix)!),
-                  String(cString: (logmsg!.pointee.level)!),
-                  String(cString: (logmsg!.pointee.text)!))
-        default:
-            print("event:", String(cString: mpv_event_name(event.pointee.event_id)))
-        }
-    }
 
     private let displayLinkCallback: CVDisplayLinkOutputCallback = { (displayLink, now, outputTime, flagsIn, flagsOut, displayLinkContext) -> CVReturn in
         let layer: VideoLayer = unsafeBitCast(displayLinkContext, to: VideoLayer.self)
@@ -297,7 +204,8 @@ class VideoLayer: CAOpenGLLayer {
         let displayId = UInt32(NSScreen.main?.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as! Int)
 
         CVDisplayLinkCreateWithCGDisplay(displayId, &link)
-        CVDisplayLinkSetOutputCallback(link!, displayLinkCallback,
+        CVDisplayLinkSetOutputCallback(link!,
+                                       displayLinkCallback,
                                        UnsafeMutableRawPointer(Unmanaged.passUnretained(self).toOpaque()))
         CVDisplayLinkStart(link!)
     }
@@ -318,4 +226,344 @@ class VideoLayer: CAOpenGLLayer {
             exit(1)
         }
     }
+
+}
+
+
+extension VideoLayer {
+
+    func mpvCommand(cmd: [String?], blocking: Bool = false) {
+        // blocking
+        if blocking {
+            var args = cmd.map{ $0.flatMap{ UnsafePointer<Int8>(strdup($0)) } }
+            defer { args.compactMap { $0 }.forEach { free(UnsafeMutablePointer(mutating: $0)) } }
+            self.checkError(mpv_command(self.mpv, &args))
+            return
+        }
+        // non-blocking
+        queue.async {
+            var args = cmd.map{ $0.flatMap{ UnsafePointer<Int8>(strdup($0)) } }
+            defer { args.compactMap { $0 }.forEach { free(UnsafeMutablePointer(mutating: $0)) }}
+            self.checkError(mpv_command(self.mpv, &args))
+        }
+    }
+
+    func mpvCommandAsync(cmd: [String?], asyncID: AsyncID, blocking: Bool = false) {
+        if blocking {
+            var args = cmd.map{ $0.flatMap{ UnsafePointer<Int8>(strdup($0)) } }
+            defer { args.compactMap { $0 }.forEach { free(UnsafeMutablePointer(mutating: $0)) } }
+            self.checkError(mpv_command_async(self.mpv, asyncID.rawValue, &args))
+            return
+        }
+        queue.async {
+            var args = cmd.map{ $0.flatMap{ UnsafePointer<Int8>(strdup($0)) } }
+            defer { args.compactMap { $0 }.forEach { free(UnsafeMutablePointer(mutating: $0)) } }
+            self.checkError(mpv_command_async(self.mpv, asyncID.rawValue, &args))
+        }
+    }
+
+    func mpvSetProperty<T>(property: String, value: T) {
+        var node = mpv_node()
+        defer {
+            mpv_free_node_contents(&node)
+        }
+
+        setNode(nodePtr: &node, value: value)
+        property.withCString { propertyPtr in
+            checkError(mpv_set_property(self.mpv, propertyPtr, MPV_FORMAT_NODE, &node))
+        }
+    }
+
+    func mpvSetPropertyAsync<T>(property: String, value: T, id: UInt64) {
+        var node = mpv_node()
+        defer {
+            mpv_free_node_contents(&node)
+        }
+
+        setNode(nodePtr: &node, value: value)
+        property.withCString { propertyPtr in
+            checkError(mpv_set_property_async(self.mpv, id, propertyPtr, MPV_FORMAT_NODE, &node))
+        }
+    }
+
+    func mpvGetProperty<T>(property: String) -> T? {
+        var node = mpv_node()
+        defer {
+            mpv_free_node_contents(&node)
+        }
+
+        property.withCString { propertyPtr in
+            checkError(mpv_get_property(self.mpv, propertyPtr, MPV_FORMAT_NODE, &node))
+        }
+
+        if let value = nodeToValue(nodePtr: &node) {
+            return value as? T
+        } else {
+            print("nodeToValue failed.")
+        }
+
+        return nil
+    }
+
+    func mpvGetPropertyAsync(property: String, asyncID: AsyncID) {
+        property.withCString { propertyPtr in
+            checkError(mpv_get_property_async(self.mpv, asyncID.rawValue, propertyPtr, MPV_FORMAT_NODE))
+        }
+    }
+
+    private func nodeToValue(nodePtr: UnsafePointer<mpv_node>) -> Any? {
+        let node = nodePtr.pointee
+        switch node.format {
+        case MPV_FORMAT_STRING:
+            return String(cString: node.u.string, encoding: .utf8)
+        case MPV_FORMAT_INT64:
+            return node.u.int64
+        case MPV_FORMAT_DOUBLE:
+            return node.u.double_
+        case MPV_FORMAT_NODE_ARRAY:
+            return nodeToArray(nodePtr: nodePtr)
+        case MPV_FORMAT_NODE_MAP:
+            return nodeToMap(nodePtr: nodePtr)
+        case MPV_FORMAT_NONE:
+            print("mpv node format is none, failed to get property")
+            break
+        default:
+            break
+        }
+        return nil
+    }
+
+    private func nodeToArray(nodePtr: UnsafePointer<mpv_node>) -> [Any]? {
+        let node = nodePtr.pointee
+        switch node.format {
+        case MPV_FORMAT_NODE_ARRAY:
+            var result: [Any] = []
+            if let listPtr = node.u.list {
+                let list = listPtr.pointee
+                let buffer = UnsafeBufferPointer(start: list.values, count: Int(list.num))
+                for nodeItem in buffer {
+                    withUnsafePointer(to: nodeItem) { nodePtr in
+                        if let value = nodeToValue(nodePtr: UnsafePointer(nodePtr))  {
+                            result.append(value)
+                        }
+                    }
+                }
+                return result
+            }
+        default:
+            break
+        }
+        return nil
+    }
+
+    private func nodeToMap(nodePtr: UnsafePointer<mpv_node>) -> [String: Any]? {
+        let node = nodePtr.pointee
+        switch node.format {
+        case MPV_FORMAT_NODE_MAP:
+            var result: [String: Any] = [:]
+            if let listPtr = node.u.list {
+                let list = listPtr.pointee
+                let keysBuffer = UnsafeBufferPointer(start: list.keys, count: Int(list.num))
+                let valsBuffer = UnsafeBufferPointer(start: list.values, count: Int(list.num))
+                for i in 0 ..< keysBuffer.count {
+                    if let keyItem = keysBuffer[i] {
+                        let keyString = String(cString: keyItem, encoding: .utf8)!
+                        let valItem = valsBuffer[i]
+                        withUnsafePointer(to: valItem) { valPtr in
+                            if let val = nodeToValue(nodePtr: UnsafePointer(valPtr)) {
+                                result[keyString] = val
+                            }
+                        }
+                    }
+                }
+                return result
+            }
+        default:
+            break
+        }
+        return nil
+    }
+
+    private func setNode<T>(nodePtr: UnsafeMutablePointer<mpv_node>, value: T) {
+        switch T.self {
+        case is Double.Type:
+            nodePtr.pointee.format = MPV_FORMAT_DOUBLE
+            nodePtr.pointee.u.double_ = value as! Double
+            break
+        case is Int64.Type:
+            nodePtr.pointee.format = MPV_FORMAT_INT64
+            nodePtr.pointee.u.int64 = value as! Int64
+            break
+        case is Bool.Type:
+            nodePtr.pointee.format = MPV_FORMAT_FLAG
+            nodePtr.pointee.u.flag = (value as! Bool) ? 1 : 0
+            break
+        case is String.Type:
+            nodePtr.pointee.format = MPV_FORMAT_STRING
+            (value as! String).withCString { strPtr in
+                nodePtr.pointee.u.string = strdup(strPtr)
+            }
+            break
+        default:
+            nodePtr.pointee.format = MPV_FORMAT_NONE
+            break
+        }
+    }
+
+
+}
+
+extension VideoLayer {
+
+    private func readEventsThread() {
+        Task {
+            while self.mpv != nil {
+                let event = mpv_wait_event(self.mpv, 0)
+                if event!.pointee.event_id == MPV_EVENT_NONE {
+                    break
+                }
+                self.handleEvent(event)
+            }
+        }
+    }
+
+    private func handleEvent(_ event: UnsafePointer<mpv_event>!) {
+        switch event.pointee.event_id {
+
+        case MPV_EVENT_SHUTDOWN:
+            mpv_render_context_free(mpvRenderContext)
+            mpvRenderContext = nil
+            mpv_terminate_destroy(mpv)
+            mpv = nil
+            NSApp.terminate(self)
+
+        case MPV_EVENT_LOG_MESSAGE:
+            let logmsg = UnsafeMutablePointer<mpv_event_log_message>(OpaquePointer(event.pointee.data))
+            print("log:",
+                  String(cString: (logmsg!.pointee.prefix)!),
+                  String(cString: (logmsg!.pointee.level)!),
+                  String(cString: (logmsg!.pointee.text)!))
+
+        case MPV_EVENT_START_FILE:
+            evtStartFile()
+
+        case MPV_EVENT_FILE_LOADED:
+            evtFileLoaded()
+
+        case MPV_EVENT_END_FILE:
+            let prop = UnsafeMutablePointer<mpv_event_end_file>(OpaquePointer(event.pointee.data))
+            let reason = prop!.pointee.reason
+            if (reason == MPV_END_FILE_REASON_EOF) {
+                evtEndFile(reason: "eof");
+            } else if (reason == MPV_END_FILE_REASON_ERROR) {
+                evtEndFile(reason: "error");
+            }
+
+        // case MPV_EVENT_VIDEO_RECONFIG: {
+        //                                    Q_EMIT videoReconfig();
+        //                                    break;
+        //                                }
+
+        case MPV_EVENT_GET_PROPERTY_REPLY:
+            let asyncID: UInt64 = event.pointee.reply_userdata
+            let prop = UnsafeMutablePointer<mpv_event_property>(OpaquePointer(event.pointee.data))
+            let data = UnsafeMutablePointer<mpv_node>(OpaquePointer(prop?.pointee.data))
+            switch AsyncID(rawValue: asyncID) {
+            case .volume:
+                let value = data!.pointee.u.double_
+                print("get prop reply: volume value is: \(value)")
+            default:
+                print("get prop reply: unkown asyncID: \(asyncID)")
+            }
+
+        case MPV_EVENT_SET_PROPERTY_REPLY:
+            let asyncID: UInt64 = event.pointee.reply_userdata
+            switch AsyncID(rawValue: asyncID) {
+            case .volume:
+                print("set prop reply: volume is set.")
+            case .pause:
+                print("set prop reply: pause/unpause is set.")
+            default:
+                print("set prop reply: unkown asyncID: \(asyncID)")
+            }
+
+        case MPV_EVENT_COMMAND_REPLY:
+            let asyncID: UInt64 = event.pointee.reply_userdata
+            let prop = UnsafeMutablePointer<mpv_node>(OpaquePointer(event.pointee.data))
+            switch AsyncID(rawValue: asyncID) {
+            case .addSmartSubtitle:
+                print("command reply: add smart subtitle")
+                break
+            case .addNormalSubtitle:
+                print("command reply: add normal subtitle")
+                break
+            default:
+                print("unkown command \(asyncID)")
+            }
+
+        // case MPV_EVENT_PROPERTY_CHANGE: {
+        //                                     mpv_event_property* prop = static_cast<mpv_event_property*>(event->data);
+        //                                     QVariant data;
+        //                                     switch (prop->format) {
+        //                                     case MPV_FORMAT_DOUBLE:
+        //                                         data = *reinterpret_cast<double*>(prop->data);
+        //                                         break;
+        //                                     case MPV_FORMAT_STRING:
+        //                                         data = QString::fromStdString(*reinterpret_cast<char**>(prop->data));
+        //                                         break;
+        //                                     case MPV_FORMAT_INT64:
+        //                                         data = qlonglong(*reinterpret_cast<int64_t*>(prop->data));
+        //                                         break;
+        //                                     case MPV_FORMAT_FLAG:
+        //                                         data = *reinterpret_cast<bool*>(prop->data);
+        //                                         break;
+        //                                     case MPV_FORMAT_NODE:
+        //                                         data = d_ptr->nodeToVariant(reinterpret_cast<mpv_node*>(prop->data));
+        //                                         break;
+        //                                     case MPV_FORMAT_NONE:
+        //                                     case MPV_FORMAT_OSD_STRING:
+        //                                     case MPV_FORMAT_NODE_ARRAY:
+        //                                     case MPV_FORMAT_NODE_MAP:
+        //                                     case MPV_FORMAT_BYTE_ARRAY:
+        //                                         break;
+        //                                     }
+        //                                     Q_EMIT propertyChanged(QString::fromStdString(prop->name), data);
+        //                                     break;
+        //                                 }
+        // case MPV_EVENT_LOG_MESSAGE: {
+        //                                 mpv_event_log_message* msg = static_cast<mpv_event_log_message*>(event->data);
+        //                                 fprintf(stderr, "mpv message: %s", msg->text);
+        //                                 break;
+        //                             }
+        // case MPV_EVENT_CLIENT_MESSAGE:
+        // case MPV_EVENT_NONE:
+        // case MPV_EVENT_SHUTDOWN:
+        // case MPV_EVENT_AUDIO_RECONFIG:
+        // case MPV_EVENT_SEEK:
+        // case MPV_EVENT_PLAYBACK_RESTART:
+        // case MPV_EVENT_QUEUE_OVERFLOW:
+        // case MPV_EVENT_HOOK:
+        //     #if MPV_ENABLE_DEPRECATED
+        // case MPV_EVENT_IDLE:
+        // case MPV_EVENT_TICK:
+        //     #endif
+        //     break;
+
+        default:
+            print("event:", String(cString: mpv_event_name(event.pointee.event_id)))
+        }
+    }
+
+    private func evtStartFile () {
+        print("mpv event: start file")
+    }
+
+    private func evtFileLoaded () {
+        print("mpv event: file loaded")
+    }
+
+    private func evtEndFile(reason: String) {
+        print("mpv event: end file, reason: \(reason)")
+    }
+
 }

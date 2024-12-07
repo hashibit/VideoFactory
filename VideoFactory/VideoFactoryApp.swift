@@ -49,7 +49,8 @@ struct VideoFactoryApp: App {
             }
             .background(.black)
             .onAppear {
-                let filepath = "/Users/jiechen/Downloads/scent-of-woman/out-of-order.mp4"
+                // let filepath = "/Users/jiechen/Downloads/scent-of-woman/out-of-order.mp4"
+                let filepath = "/Users/jiechen/Downloads/mp4-subs/OUTPUT.mp4"
                 videoLayer.tryLoadFile(filepath)
             }
         }
