@@ -1,13 +1,19 @@
 import SwiftUI
 import AppKit
 
-struct ControlButton: View {
-    let systemName: String
-    let action: () -> Void
+public struct ControlButton: View {
+    public let systemName: String
+    public let action: () -> Void
 
-    @State private var isHovered = false
+    @State public var isHovered = false
 
-    var body: some View {
+    // 添加 public 初始化器
+    public init(systemName: String, action: @escaping () -> Void) {
+        self.systemName = systemName
+        self.action = action
+    }
+
+    public var body: some View {
         Button(action: action) {
             Image(systemName: systemName)
                 .frame(width: 20, height: 20)

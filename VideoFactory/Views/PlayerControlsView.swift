@@ -1,4 +1,5 @@
 import SwiftUI
+import UI
 
 struct PlayerControlsView: View {
     @State private var volume: Double = 0.5

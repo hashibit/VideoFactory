@@ -1,11 +1,11 @@
 import SwiftUI
 
 // 自定义音量 Slider 样式
-struct VolumeSliderStyle: ViewModifier {
-    let value: Binding<Double>
-    let range: ClosedRange<Double>
+public struct VolumeSliderStyle: ViewModifier {
+    public let value: Binding<Double>
+    public let range: ClosedRange<Double>
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
                 // 背景轨道
@@ -32,11 +32,11 @@ struct VolumeSliderStyle: ViewModifier {
 }
 
 // 自定义进度 Slider 样式
-struct ProgressSliderStyle: ViewModifier {
-    let value: Binding<Double>
-    let range: ClosedRange<Double>
+public struct ProgressSliderStyle: ViewModifier {
+    public let value: Binding<Double>
+    public let range: ClosedRange<Double>
 
-    func body(content: Content) -> some View {
+    public func body(content: Content) -> some View {
         GeometryReader { geometry in
             ZStack(alignment: .leading) {
                 // 背景轨道
@@ -69,11 +69,11 @@ struct ProgressSliderStyle: ViewModifier {
 }
 
 extension View {
-    func volumeSliderStyle(value: Binding<Double>, range: ClosedRange<Double>) -> some View {
+    public func volumeSliderStyle(value: Binding<Double>, range: ClosedRange<Double>) -> some View {
         self.modifier(VolumeSliderStyle(value: value, range: range))
     }
 
-    func progressSliderStyle(value: Binding<Double>, range: ClosedRange<Double>) -> some View {
+    public func progressSliderStyle(value: Binding<Double>, range: ClosedRange<Double>) -> some View {
         self.modifier(ProgressSliderStyle(value: value, range: range))
     }
 }

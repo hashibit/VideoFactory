@@ -8,7 +8,7 @@ class VideoStore {
     let container: ModelContainer
 
     private init() {
-        let dbPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("vps.db")
+        let dbPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("vpv.db")
         let configuration = ModelConfiguration(url: dbPath)
         self.container = try! ModelContainer(for: VideoModel.self, configurations: configuration)
     }
