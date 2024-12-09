@@ -1,37 +1,57 @@
+import Common
 import SwiftUI
 
 public struct SubtitleSelectingView: View {
-    @State private var appLanguage: String = "中文"
-    @State private var showChatGPT: Bool = true
-    @State private var autoCorrect: Bool = false
-    @State private var autoLaunch: Bool = false
-    @State private var openLinksInApp: Bool = true
+    @State public var appLanguage: String = "中文"
+    @State public var showChatGPT: Bool = true
+    @State public var autoCorrect: Bool = false
+    @State public var autoLaunch: Bool = false
+    @State public var apply: Bool = true
+    @State public var openLinksInApp: Bool = true
+
+    @State public var embededSubtitles: [SubtitleModel] = []
+    @State public var embededSelectedIndex: Int?
+
+    @State public var externalSubtitles: [SubtitleModel] = []
+    @State public var externalSelectedIndex: Int?
+
+    @State public var transcribeSubtitles: [SubtitleModel] = []
+    @State public var transcribeSelectedIndex: Int?
+
+    @State public var translateSubtitles: [SubtitleModel] = []
+    @State public var translateSelectedIndex: Int?
+
+    private func clearAllSelected() {
+        embededSelectedIndex = nil
+        externalSelectedIndex = nil
+        transcribeSelectedIndex = nil
+        translateSelectedIndex = nil
+
+    }
 
     public var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 // 第一部分：账户
-                Section(header: Text("账户")) {
-                    HStack {
-                        Image(systemName: "envelope")
-                        Text("电子邮件")
-                        Spacer()
-                        Text("nickelchen0101@gmail.com")
-                          .foregroundColor(.gray)
-                    }
-
-                    HStack {
-                        Image(systemName: "plus.circle")
-                        Text("订阅")
-                        Spacer()
-                        Text("Free 套餐")
-                          .foregroundColor(.gray)
-                    }
-
-                    NavigationLink(destination: Text("升级到 ChatGPT Plus")) {
-                        HStack {
-                            Image(systemName: "arrow.up.circle")
-                            Text("升级至 ChatGPT Plus")
+                Section(header: Text("内置字幕")) {
+                    ForEach(embededSubtitles.indices, id: \.self) { index in
+                        Toggle(
+                            isOn: Binding(
+                                get: { embededSelectedIndex == index },
+                                set: { newValue in
+                                    self.clearAllSelected()
+                                    if newValue {
+                                        embededSelectedIndex = index
+                                    }
+                                }
+                            )
+                        ) {
+                            HStack {
+                                Text("内嵌字幕 \(index)")
+                                Spacer()
+                                Text("英文")
+                                    .foregroundColor(.gray)
+                            }
                         }
                     }
 
@@ -57,59 +77,127 @@ public struct SubtitleSelectingView: View {
                     }
                 }
 
-                // 第二部分：应用
-                Section(header: Text("应用")) {
-                    HStack {
-                        Image(systemName: "globe")
-                        Text("应用语言")
-                        Spacer()
-                        Text(appLanguage)
-                          .foregroundColor(.gray)
-                    }
-
-                    Toggle(isOn: $showChatGPT) {
-                        HStack {
-                            Image(systemName: "eye")
-                            Text("显示 ChatGPT")
+                // 第二部分：外部字幕
+                Section(header: Text("外部字幕")) {
+                    ForEach(externalSubtitles.indices, id: \.self) { index in
+                        Toggle(
+                            isOn: Binding(
+                                get: { externalSelectedIndex == index },
+                                set: { newValue in
+                                    self.clearAllSelected()
+                                    if newValue {
+                                        externalSelectedIndex = index
+                                    }
+                                }
+                            )
+                        ) {
+                            HStack {
+                                Text("外部字幕 \(index)")
+                                Spacer()
+                                Text("英文")
+                                    .foregroundColor(.gray)
+                            }
                         }
                     }
 
-                    Toggle(isOn: $autoCorrect) {
-                        HStack {
-                            Image(systemName: "pencil.circle")
-                            Text("自动更正拼写")
-                        }
-                    }
-
-                    Toggle(isOn: $autoLaunch) {
-                        HStack {
-                            Image(systemName: "arrow.right.circle")
-                            Text("在登录时启动")
-                        }
-                    }
-
-                    Toggle(isOn: $openLinksInApp) {
-                        HStack {
-                            Image(systemName: "link")
-                            Text("在桌面 App 中打开 ChatGPT 链接")
-                        }
-                    }
-
-                    NavigationLink(destination: Text("检查更新")) {
+                    NavigationLink(destination: Text("添加外部字幕")) {
                         HStack {
                             Image(systemName: "arrow.clockwise.circle")
-                            Text("检查更新...")
+                            Text("添加外部字幕...")
+                        }
+                    }
+
+                }
+
+                // 第 3 部分：AI 识别字幕
+                // 第二部分：外部字幕
+                Section(header: Text("识别字幕")) {
+                    ForEach(transcribeSubtitles.indices, id: \.self) { index in
+                        Toggle(
+                            isOn:
+                                Binding(
+                                    get: { transcribeSelectedIndex == index },
+                                    set: { newValue in
+                                        self.clearAllSelected()
+                                        if newValue {
+                                            transcribeSelectedIndex = index
+                                        }
+                                    }
+                                )
+                        ) {
+                            HStack {
+                                Text("识别字幕 \(index)")
+                                Spacer()
+                                Text("英文")
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                    }
+
+                    NavigationLink(destination: Text("识别字幕")) {
+                        HStack {
+                            Image(systemName: "arrow.clockwise.circle")
+                            Text("重新识别...")
+                        }
+                    }
+                }
+
+                // 第 4 部分：翻译字幕
+                Section(header: Text("翻译字幕")) {
+                    ForEach(translateSubtitles.indices, id: \.self) { index in
+                        Toggle(
+                            isOn:
+                                Binding(
+                                    get: { translateSelectedIndex == index },
+                                    set: { newValue in
+                                        self.clearAllSelected()
+                                        if newValue {
+                                            translateSelectedIndex = index
+                                        }
+                                    }
+                                )
+                        ) {
+                            HStack {
+                                Text("翻译字幕 \(index)")
+                                Spacer()
+                                Text("英文")
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                    }
+
+                    NavigationLink(destination: Text("翻译字幕")) {
+                        HStack {
+                            Image(systemName: "arrow.clockwise.circle")
+                            Text("翻译更多...")
                         }
                     }
                 }
             }
-              .navigationTitle("设置")
+            .navigationTitle("设置")
         }
     }
 }
 
 struct SubtitleSelectingView_Previews: PreviewProvider {
+    static let embededSubtitles: [SubtitleModel] = [
+        SubtitleModel(), SubtitleModel(), SubtitleModel(),
+    ]
+    static let externalSubtitles: [SubtitleModel] = [
+        SubtitleModel(), SubtitleModel(),
+    ]
+    static let transcribeSubtitles: [SubtitleModel] = [
+        SubtitleModel(), SubtitleModel(), SubtitleModel(),
+    ]
+    static let translateSubtitles: [SubtitleModel] = [
+        SubtitleModel(), SubtitleModel(),
+    ]
     static var previews: some View {
-        SubtitleSelectingView()
+        SubtitleSelectingView(
+            embededSubtitles: embededSubtitles,
+            externalSubtitles: externalSubtitles,
+            transcribeSubtitles: transcribeSubtitles,
+            translateSubtitles: translateSubtitles
+        )
     }
 }

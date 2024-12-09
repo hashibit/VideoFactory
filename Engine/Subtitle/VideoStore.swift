@@ -1,9 +1,10 @@
 
 import Foundation
 import SwiftData
+import Common
 
-class VideoStore {
-    static var shared = VideoStore()
+public class VideoStore {
+    public static var shared = VideoStore()
 
     let container: ModelContainer
 
@@ -14,14 +15,14 @@ class VideoStore {
     }
 
     @MainActor
-    func insert(video: VideoModel) -> UUID {
+    public func insert(video: VideoModel) -> UUID {
         video.id = UUID()
         container.mainContext.insert(video)
         return video.id
     }
 
     @MainActor
-    func update(id: UUID, video: VideoModel) {
+    public func update(id: UUID, video: VideoModel) {
         let descriptor = FetchDescriptor<VideoModel>(
             predicate: #Predicate<VideoModel> { $0.id == id }
         )
@@ -32,7 +33,7 @@ class VideoStore {
     }
 
     @MainActor
-    func upsert(id: UUID, video: VideoModel) {
+    public func upsert(id: UUID, video: VideoModel) {
         let descriptor = FetchDescriptor<VideoModel>(
             predicate: #Predicate<VideoModel> { $0.id == id }
         )
@@ -46,7 +47,7 @@ class VideoStore {
     }
 
     @MainActor
-    func query(filepath: String) -> VideoModel? {
+    public func query(filepath: String) -> VideoModel? {
         let descriptor = FetchDescriptor<VideoModel>(
             predicate: #Predicate<VideoModel> { $0.filepath == filepath }
         )
@@ -54,7 +55,7 @@ class VideoStore {
     }
 
     @MainActor
-    func query(movieID: UUID) -> VideoModel? {
+    public func query(movieID: UUID) -> VideoModel? {
         let descriptor = FetchDescriptor<VideoModel>(
             predicate: #Predicate<VideoModel> { $0.movieID == movieID }
         )
@@ -62,7 +63,7 @@ class VideoStore {
     }
 
     @MainActor
-    func query(hash: String) -> VideoModel? {
+    public func query(hash: String) -> VideoModel? {
         let descriptor = FetchDescriptor<VideoModel>(
             predicate: #Predicate<VideoModel> { $0.hash == hash }
         )
@@ -70,7 +71,7 @@ class VideoStore {
     }
 
     @MainActor
-    func query(id: UUID) -> VideoModel? {
+    public func query(id: UUID) -> VideoModel? {
         let descriptor = FetchDescriptor<VideoModel>(
             predicate: #Predicate<VideoModel> { $0.id == id }
         )
@@ -78,7 +79,7 @@ class VideoStore {
     }
 
     @MainActor
-    func remove(id: UUID) -> VideoModel? {
+    public func remove(id: UUID) -> VideoModel? {
         let descriptor = FetchDescriptor<VideoModel>(
             predicate: #Predicate<VideoModel> { $0.id == id }
         )

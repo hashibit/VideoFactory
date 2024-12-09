@@ -7,18 +7,18 @@
 
 import Foundation
 
-enum FactoryError: Error {
+public enum FactoryError: Error {
     case taskAlreadyRunning
 }
 
 // 10min
-let timeout = 60 * 10
+public let timeout = 60 * 10
 
-class SubtitleEngine {
+public class SubtitleEngine {
 
-    static let shared = SubtitleEngine();
+    public static let shared = SubtitleEngine();
 
-    typealias FactoryTask = Task<Void, Error>
+    public typealias FactoryTask = Task<Void, Error>
 
     private var transcribeTask : FactoryTask?
     private var translateTask : FactoryTask?
@@ -26,7 +26,7 @@ class SubtitleEngine {
     private init() { }
 
     // transcribe return a cancellable task
-    func transcribe(videoFilePath: String, onFinished: @escaping (String) -> Void) -> Result<FactoryTask, Error> {
+    public func transcribe(videoFilePath: String, onFinished: @escaping (String) -> Void) -> Result<FactoryTask, Error> {
         if transcribeTask != nil {
             return .failure(FactoryError.taskAlreadyRunning)
         }
@@ -43,7 +43,7 @@ class SubtitleEngine {
         return .success(transcribeTask!)
     }
 
-    func translate(subFilePath: String, onFinished: @escaping (String) -> Void) -> Result<FactoryTask, Error> {
+    public func translate(subFilePath: String, onFinished: @escaping (String) -> Void) -> Result<FactoryTask, Error> {
         if translateTask != nil {
             return .failure(FactoryError.taskAlreadyRunning)
         }

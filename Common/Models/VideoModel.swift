@@ -4,28 +4,28 @@
 //
 //  Created by Jie Chen on 2024/12/5.
 //
-
 import Foundation
 import SwiftData
 
 @Model
-class VideoModel {
-    var id: UUID
-    var parentID: UUID
-    var origin: String
-    var movieID: UUID
-    var filepath: String
-    var trackID: UUID
-    var hash: String
-    var filesize: Int64
-    var encMethod: String
-    var language: String
-    var duration: Int
-    var createdAt: Date
-    var updatedAt: Date
-    var deletedAt: Date
+public class VideoModel {
 
-    init(id: UUID, parentID: UUID, origin: String, movieID: UUID, filepath: String, trackID: UUID,
+    public var id: UUID
+    public var parentID: UUID
+    public var origin: String
+    public var movieID: UUID
+    public var filepath: String
+    public var trackID: UUID
+    public var hash: String
+    public var filesize: Int64
+    public var encMethod: String
+    public var language: String
+    public var duration: Int
+    public var createdAt: Date
+    public var updatedAt: Date
+    public var deletedAt: Date
+
+    public init(id: UUID, parentID: UUID, origin: String, movieID: UUID, filepath: String, trackID: UUID,
          hash: String, filesize: Int64, encMethod: String, language: String, duration: Int,
          createdAt: Date = Date(), updatedAt: Date = Date(), deletedAt: Date = Date()) {
         self.id = id
@@ -44,7 +44,7 @@ class VideoModel {
         self.deletedAt = deletedAt
     }
 
-    convenience init() {
+    public convenience init() {
         self.init(id: UUID(),
                   parentID: UUID(),
                   origin: "",
@@ -58,7 +58,7 @@ class VideoModel {
                   duration: 0)
     }
 
-    static func createEmbededSubTrack(movieId: UUID, trackId: UUID) -> VideoModel {
+    public static func createEmbededSubTrack(movieId: UUID, trackId: UUID) -> VideoModel {
         return VideoModel(
             id: UUID(),
             parentID: UUID(),
@@ -77,11 +77,11 @@ class VideoModel {
         )
     }
 
-    static func createFromFilepath(movieId: UUID, filepath: String) -> VideoModel {
+    public static func createFromFilepath(movieId: UUID, filepath: String) -> VideoModel {
         return createFromFilepath(movieId: movieId, filepath: filepath, origin: "unset")
     }
 
-    static func createFromFilepath(movieId: UUID, filepath: String, origin: String) -> VideoModel {
+    public static func createFromFilepath(movieId: UUID, filepath: String, origin: String) -> VideoModel {
         let hash = generateHash(filepath) ?? ""
         return VideoModel(
             id: UUID(),
@@ -101,7 +101,7 @@ class VideoModel {
         )
     }
 
-    func copy(from source: VideoModel) {
+    public func copy(from source: VideoModel) {
         self.id = source.id
         self.parentID = source.parentID
         self.origin = source.origin
@@ -118,7 +118,7 @@ class VideoModel {
         self.deletedAt = source.deletedAt
     }
 
-    func smartKey() -> String {
+    public func smartKey() -> String {
         if origin == SubtitleOrigin.transcribe.rawValue {
             return "语音识别字幕:\(id)"
         } else if origin == SubtitleOrigin.translate.rawValue {

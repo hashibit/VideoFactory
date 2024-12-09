@@ -1,8 +1,9 @@
 import Foundation
 import SwiftData
+import Common
 
-class SubtitleStore {
-    static var shared = SubtitleStore()
+public class SubtitleStore {
+    public static var shared = SubtitleStore()
 
     let container: ModelContainer
 
@@ -13,13 +14,13 @@ class SubtitleStore {
     }
 
     @MainActor
-    func insert(subtitle: SubtitleModel) -> UUID {
+    public func insert(subtitle: SubtitleModel) -> UUID {
         subtitle.id = UUID()
         container.mainContext.insert(subtitle)
         return subtitle.id
     }
     @MainActor
-    func update(id: UUID, subtitle: SubtitleModel) {
+    public func update(id: UUID, subtitle: SubtitleModel) {
         let descriptor = FetchDescriptor<SubtitleModel>(
             predicate: #Predicate<SubtitleModel> { $0.id == id }
         )
@@ -30,7 +31,7 @@ class SubtitleStore {
     }
 
     @MainActor
-    func upsert(id: UUID, subtitle: SubtitleModel) {
+    public func upsert(id: UUID, subtitle: SubtitleModel) {
         let descriptor = FetchDescriptor<SubtitleModel>(
             predicate: #Predicate<SubtitleModel> { $0.id == id }
         )
@@ -44,7 +45,7 @@ class SubtitleStore {
     }
 
     @MainActor
-    func query(filepath: String) -> SubtitleModel? {
+    public func query(filepath: String) -> SubtitleModel? {
         let descriptor = FetchDescriptor<SubtitleModel>(
             predicate: #Predicate<SubtitleModel> { $0.filepath == filepath }
         )
@@ -52,7 +53,7 @@ class SubtitleStore {
     }
 
     @MainActor
-    func query(videoID: UUID) -> [SubtitleModel] {
+    public func query(videoID: UUID) -> [SubtitleModel] {
         let descriptor = FetchDescriptor<SubtitleModel>(
             predicate: #Predicate<SubtitleModel> { $0.movieID == videoID }
         )
@@ -60,7 +61,7 @@ class SubtitleStore {
     }
 
     @MainActor
-    func query(hash: String) -> SubtitleModel? {
+    public func query(hash: String) -> SubtitleModel? {
         let descriptor = FetchDescriptor<SubtitleModel>(
             predicate: #Predicate<SubtitleModel> { $0.hash == hash }
         )
@@ -68,7 +69,7 @@ class SubtitleStore {
     }
 
     @MainActor
-    func query(id: UUID) -> SubtitleModel? {
+    public func query(id: UUID) -> SubtitleModel? {
         let descriptor = FetchDescriptor<SubtitleModel>(
             predicate: #Predicate<SubtitleModel> { $0.id == id }
         )
@@ -76,7 +77,7 @@ class SubtitleStore {
     }
 
     @MainActor
-    func remove(id: UUID) -> SubtitleModel? {
+    public func remove(id: UUID) -> SubtitleModel? {
         let descriptor = FetchDescriptor<SubtitleModel>(
             predicate: #Predicate<SubtitleModel> { $0.id == id }
         )
