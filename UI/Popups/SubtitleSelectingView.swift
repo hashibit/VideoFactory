@@ -9,24 +9,22 @@ public struct SubtitleSelectingView: View {
     @State public var apply: Bool = true
     @State public var openLinksInApp: Bool = true
 
+    @State public var selectedSubtitleID: UUID?
+
     @State public var embededSubtitles: [SubtitleModel] = []
-    @State public var embededSelectedIndex: Int?
-
     @State public var externalSubtitles: [SubtitleModel] = []
-    @State public var externalSelectedIndex: Int?
-
     @State public var transcribeSubtitles: [SubtitleModel] = []
-    @State public var transcribeSelectedIndex: Int?
-
     @State public var translateSubtitles: [SubtitleModel] = []
-    @State public var translateSelectedIndex: Int?
 
-    private func clearAllSelected() {
-        embededSelectedIndex = nil
-        externalSelectedIndex = nil
-        transcribeSelectedIndex = nil
-        translateSelectedIndex = nil
-
+    public init(embededSubtitles: [SubtitleModel],
+                externalSubtitles: [SubtitleModel],
+                transcribeSubtitles: [SubtitleModel],
+                translateSubtitles: [SubtitleModel]
+    ) {
+        self.embededSubtitles = embededSubtitles
+        self.externalSubtitles = externalSubtitles
+        self.translateSubtitles = translateSubtitles
+        self.transcribeSubtitles = transcribeSubtitles
     }
 
     public var body: some View {
@@ -35,14 +33,12 @@ public struct SubtitleSelectingView: View {
                 // 第一部分：账户
                 Section(header: Text("内置字幕")) {
                     ForEach(embededSubtitles.indices, id: \.self) { index in
+                        let sub = embededSubtitles[index]
                         Toggle(
                             isOn: Binding(
-                                get: { embededSelectedIndex == index },
-                                set: { newValue in
-                                    self.clearAllSelected()
-                                    if newValue {
-                                        embededSelectedIndex = index
-                                    }
+                                get: { sub.id == selectedSubtitleID},
+                                set: {
+                                    newValue in selectedSubtitleID = newValue ? sub.id : nil
                                 }
                             )
                         ) {
@@ -80,14 +76,12 @@ public struct SubtitleSelectingView: View {
                 // 第二部分：外部字幕
                 Section(header: Text("外部字幕")) {
                     ForEach(externalSubtitles.indices, id: \.self) { index in
+                        let sub = externalSubtitles[index]
                         Toggle(
                             isOn: Binding(
-                                get: { externalSelectedIndex == index },
-                                set: { newValue in
-                                    self.clearAllSelected()
-                                    if newValue {
-                                        externalSelectedIndex = index
-                                    }
+                                get: { sub.id == selectedSubtitleID},
+                                set: {
+                                    newValue in selectedSubtitleID = newValue ? sub.id : nil
                                 }
                             )
                         ) {
@@ -113,17 +107,14 @@ public struct SubtitleSelectingView: View {
                 // 第二部分：外部字幕
                 Section(header: Text("识别字幕")) {
                     ForEach(transcribeSubtitles.indices, id: \.self) { index in
+                        let sub = transcribeSubtitles[index]
                         Toggle(
-                            isOn:
-                                Binding(
-                                    get: { transcribeSelectedIndex == index },
-                                    set: { newValue in
-                                        self.clearAllSelected()
-                                        if newValue {
-                                            transcribeSelectedIndex = index
-                                        }
-                                    }
-                                )
+                            isOn: Binding(
+                                get: { sub.id == selectedSubtitleID},
+                                set: {
+                                    newValue in selectedSubtitleID = newValue ? sub.id : nil
+                                }
+                            )
                         ) {
                             HStack {
                                 Text("识别字幕 \(index)")
@@ -145,17 +136,14 @@ public struct SubtitleSelectingView: View {
                 // 第 4 部分：翻译字幕
                 Section(header: Text("翻译字幕")) {
                     ForEach(translateSubtitles.indices, id: \.self) { index in
+                        let sub = translateSubtitles[index]
                         Toggle(
-                            isOn:
-                                Binding(
-                                    get: { translateSelectedIndex == index },
-                                    set: { newValue in
-                                        self.clearAllSelected()
-                                        if newValue {
-                                            translateSelectedIndex = index
-                                        }
-                                    }
-                                )
+                            isOn: Binding(
+                                get: { sub.id == selectedSubtitleID},
+                                set: {
+                                    newValue in selectedSubtitleID = newValue ? sub.id : nil
+                                }
+                            )
                         ) {
                             HStack {
                                 Text("翻译字幕 \(index)")
@@ -166,7 +154,7 @@ public struct SubtitleSelectingView: View {
                         }
                     }
 
-                    NavigationLink(destination: Text("翻译字幕")) {
+                    NavigationLink(destination: TranslationView()) {
                         HStack {
                             Image(systemName: "arrow.clockwise.circle")
                             Text("翻译更多...")
@@ -174,7 +162,38 @@ public struct SubtitleSelectingView: View {
                     }
                 }
             }
-            .navigationTitle("设置")
+        }
+        .navigationTitle("设置")
+    }
+}
+
+struct TranslationView: View {
+    var body: some View {
+        GeometryReader { geometry in
+            VStack {
+                Text("翻译字幕内容")
+                Spacer()
+                HStack {
+                    Button("取消") {
+                        print("取消")
+                    }
+                    Button("开始") {
+                        print("开始")
+                    }
+                }
+            }
+            .padding(10)
+            .navigationBarBackButtonHidden()
+            .navigationTitle("翻译字幕")
+            .frame(width: 500, height: 300)
+            .background(.background)
+            .position(
+                x: geometry.size.width/2,
+                y: geometry.size.height/2
+            )
+            .onTapGesture {
+                print("onTap")
+            }
         }
     }
 }

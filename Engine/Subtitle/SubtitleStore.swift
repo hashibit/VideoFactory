@@ -53,7 +53,8 @@ public class SubtitleStore {
     }
 
     @MainActor
-    public func query(videoID: UUID) -> [SubtitleModel] {
+    public func query(videoID: UUID?) -> [SubtitleModel] {
+        guard let videoID else { return [] }
         let descriptor = FetchDescriptor<SubtitleModel>(
             predicate: #Predicate<SubtitleModel> { $0.movieID == videoID }
         )

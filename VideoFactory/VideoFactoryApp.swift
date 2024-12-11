@@ -8,24 +8,19 @@
 import SwiftUI
 import SwiftData
 
+import UI
+import Common
+
 @main
 struct VideoFactoryApp: App {
-//    @State
-//    var isResizing: Bool = false
-
     var videoLayer = VideoLayer()
     var videoController = MpvController.shared
 
-    // @Environment(\.modelContext)
-    // var modelContext: ModelContext
+    @StateObject var subtitlesViewModel = SubtitlesViewModel()
+    @State var isSelectingSubtitle: Bool = false
+    @State var videoID: UUID?
 
     var body: some Scene {
-        let dbPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("vpf.db")
-        let configuration = ModelConfiguration(url: dbPath)
-        let container = try! ModelContainer(for: VideoModel.self, SubtitleModel.self, configurations: configuration)
-
-        videoController.control(videoLayer: videoLayer)
-
         return WindowGroup {
             VideoView {
                 ZStack {
@@ -41,14 +36,41 @@ struct VideoFactoryApp: App {
 
                         Spacer()
 
+                        Button("Update") {
+                            subtitlesViewModel.fetchSubtitles(videoID: videoID)
+                            isSelectingSubtitle = true
+                        }
+
                         PlayerControlsView()
                             .padding(20)
+                    }
+
+                    if isSelectingSubtitle {
+                        GeometryReader { geometry in
+                            SubtitleSelectingView(
+                                embededSubtitles: subtitlesViewModel.embededSubtitles,
+                                externalSubtitles: subtitlesViewModel.externalSubtitles,
+                                transcribeSubtitles: subtitlesViewModel.transcribeSubtitles,
+                                translateSubtitles: subtitlesViewModel.translateSubtitles
+                            )
+                            .frame(width: 500, height: 300)
+                            .position(
+                                x: geometry.size.width/2,
+                                y: geometry.size.height/2
+                            )
+                        }
+                        .background(.gray.opacity(0.3))
+                        .onTapGesture {
+                            isSelectingSubtitle = false
+                        }
                     }
                 }
 
             }
             .background(.black)
             .onAppear {
+                videoController.control(videoLayer: videoLayer)
+
                 // let filepath = "/Users/jiechen/Downloads/scent-of-woman/out-of-order.mp4"
                 let filepath = "/Users/jiechen/Downloads/mp4-subs/OUTPUT.mp4"
                 videoLayer.tryLoadFile(filepath)
@@ -57,6 +79,5 @@ struct VideoFactoryApp: App {
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
         .defaultSize(width: 1280, height: 720)
-        .environment(\.modelContext, container.mainContext)
     }
 }
