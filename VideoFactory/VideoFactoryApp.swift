@@ -51,7 +51,8 @@ struct VideoFactoryApp: App {
                                 embededSubtitles: subtitlesViewModel.embededSubtitles,
                                 externalSubtitles: subtitlesViewModel.externalSubtitles,
                                 transcribeSubtitles: subtitlesViewModel.transcribeSubtitles,
-                                translateSubtitles: subtitlesViewModel.translateSubtitles
+                                translateSubtitles: subtitlesViewModel.translateSubtitles,
+                                selectedSubtitleID: subtitlesViewModel.selectedSubtitleID
                             )
                             .frame(width: 500, height: 300)
                             .position(
