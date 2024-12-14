@@ -5,11 +5,11 @@
 //  Created by Jie Chen on 2024/11/29.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
-import UI
 import Common
+import UI
 
 @main
 struct VideoFactoryApp: App {
@@ -56,8 +56,8 @@ struct VideoFactoryApp: App {
                             )
                             .frame(width: 500, height: 300)
                             .position(
-                                x: geometry.size.width/2,
-                                y: geometry.size.height/2
+                                x: geometry.size.width / 2,
+                                y: geometry.size.height / 2
                             )
                         }
                         .background(.gray.opacity(0.3))
@@ -66,7 +66,6 @@ struct VideoFactoryApp: App {
                         }
                     }
                 }
-
             }
             .background(.black)
             .onAppear {
@@ -77,19 +76,18 @@ struct VideoFactoryApp: App {
                 videoLayer.tryLoadFile(filepath)
             }
         }
-          .windowStyle(.hiddenTitleBar)
-          .windowResizability(.contentSize)
-          .defaultSize(width: 1280, height: 720)
-          .commands {
-              FileMenuCommands(onOpenItemClicked: {
-                                   print("open item clicked")
-                               }, onQuitItemClicked: {
-                                      print("quit item clicked")
-                                  })
-          }
+        .windowStyle(.hiddenTitleBar)
+        .windowResizability(.contentSize)
+        .defaultSize(width: 1280, height: 720)
+        .commands {
+            FileMenuCommands(onOpenItemClicked: {
+                print("open item clicked")
+            }, onQuitItemClicked: {
+                print(" clicked")
+            })
+        }
     }
 }
-
 
 struct FileMenuCommands: Commands {
     var onOpenItemClicked: (() -> Void)?
@@ -106,15 +104,14 @@ struct FileMenuCommands: Commands {
             Button("打开文件") {
                 print("打开文件")
             }
-              .keyboardShortcut("O", modifiers: [.command])
+            .keyboardShortcut("O", modifiers: [.command])
 
             Divider()
 
             Button("退出") {
                 print("退出")
             }
-              .keyboardShortcut("Q", modifiers: [.command])
+            .keyboardShortcut("Q", modifiers: [.command])
         }
-
     }
 }
