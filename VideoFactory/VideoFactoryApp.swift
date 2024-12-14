@@ -77,8 +77,44 @@ struct VideoFactoryApp: App {
                 videoLayer.tryLoadFile(filepath)
             }
         }
-        .windowStyle(.hiddenTitleBar)
-        .windowResizability(.contentSize)
-        .defaultSize(width: 1280, height: 720)
+          .windowStyle(.hiddenTitleBar)
+          .windowResizability(.contentSize)
+          .defaultSize(width: 1280, height: 720)
+          .commands {
+              FileMenuCommands(onOpenItemClicked: {
+                                   print("open item clicked")
+                               }, onQuitItemClicked: {
+                                      print("quit item clicked")
+                                  })
+          }
+    }
+}
+
+
+struct FileMenuCommands: Commands {
+    var onOpenItemClicked: (() -> Void)?
+    var onQuitItemClicked: (() -> Void)?
+
+    var body: some Commands {
+        // this remove New window option
+        CommandGroup(replacing: .newItem) {}
+        // this remove Close window option(I don't know why)
+        CommandGroup(replacing: .saveItem) {}
+
+        // this add ours options
+        CommandGroup(after: CommandGroupPlacement.newItem) {
+            Button("打开文件") {
+                print("打开文件")
+            }
+              .keyboardShortcut("O", modifiers: [.command])
+
+            Divider()
+
+            Button("退出") {
+                print("退出")
+            }
+              .keyboardShortcut("Q", modifiers: [.command])
+        }
+
     }
 }

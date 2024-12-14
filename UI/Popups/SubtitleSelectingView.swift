@@ -8,6 +8,7 @@ public struct SubtitleSelectingView: View {
     @State public var translateSubtitles: [SubtitleModel] = []
     @State public var selectedSubtitleID: UUID?
 
+
     // for public
     public init(embededSubtitles: [SubtitleModel],
                 externalSubtitles: [SubtitleModel],
@@ -134,6 +135,7 @@ struct Section2: View {
 struct Section3: View {
     @Binding var transcribeSubtitles: [SubtitleModel]
     @Binding var selectedSubtitleID: UUID?
+    @State private var showDetailView = false
 
     var body: some View {
         Section(header: Text("识别字幕")) {
@@ -156,12 +158,16 @@ struct Section3: View {
                 }
             }
 
-            NavigationLink(destination: Text("识别字幕")) {
-                HStack {
-                    Image(systemName: "arrow.clockwise.circle")
-                    Text("重新识别...")
+            VStack {
+                Button {
+                    showDetailView = true
+                } label: {
+                    Label("重新识别", systemImage: "arrow.clockwise.circle")
                 }
             }
+
+        }.navigationDestination(isPresented: $showDetailView) {
+            SubtitleTranscribe()
         }
     }
 }
@@ -170,6 +176,7 @@ struct Section3: View {
 struct Section4: View {
     @Binding var translateSubtitles: [SubtitleModel]
     @Binding var selectedSubtitleID: UUID?
+    @State private var showDetailView = false
 
     var body: some View {
         Section(header: Text("翻译字幕")) {
@@ -177,8 +184,7 @@ struct Section4: View {
                 let sub = translateSubtitles[index]
                 Toggle(
                     isOn: Binding(
-                        get: { sub.id == selectedSubtitleID
- },
+                        get: { sub.id == selectedSubtitleID },
                         set: {
                             newValue in selectedSubtitleID = newValue ? sub.id : nil
                         }
@@ -193,12 +199,16 @@ struct Section4: View {
                 }
             }
 
-            NavigationLink(destination: SubtitleTranslate()) {
-                HStack {
-                    Image(systemName: "arrow.clockwise.circle")
-                    Text("翻译更多...")
+            VStack {
+                Button {
+                    showDetailView = true
+                } label: {
+                    Label("翻译更多", systemImage: "arrow.clockwise.circle")
                 }
             }
+
+        }.navigationDestination(isPresented: $showDetailView) {
+            SubtitleTranslate()
         }
     }
 }

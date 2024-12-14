@@ -9,10 +9,12 @@ import SwiftUI
 
 struct SubtitleTranslate: View {
     typealias Callback = () -> Void
-    
+
     var width: Int = 500
     var height: Int = 500
-    
+
+    @Environment(\.dismiss) var dismiss
+
     var onConfirm: Callback?
     var onCancel: Callback?
 
@@ -24,11 +26,13 @@ struct SubtitleTranslate: View {
                 HStack {
                     Button("取消") {
                         print("取消")
-                        if let onConfirm { onConfirm() }
+                        if let onCancel { onCancel() }
+                        dismiss()
                     }
                     Button("开始") {
                         print("开始")
-                        if let onCancel { onCancel() }
+                        if let onConfirm { onConfirm() }
+                        dismiss()
                     }
                 }
             }
