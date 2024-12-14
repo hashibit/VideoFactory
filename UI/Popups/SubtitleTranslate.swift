@@ -42,8 +42,8 @@ struct SubtitleTranslate: View {
             .frame(width: CGFloat(width), height: CGFloat(height))
             .background(.background)
             .position(
-                x: geometry.size.width/2,
-                y: geometry.size.height/2
+                x: geometry.size.width / 2,
+                y: geometry.size.height / 2
             )
             .onTapGesture {
                 print("onTap")
@@ -51,6 +51,7 @@ struct SubtitleTranslate: View {
         }
     }
 }
+
 #Preview {
     SubtitleTranslate(width: 500,
                       height: 500)

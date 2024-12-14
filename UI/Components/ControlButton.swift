@@ -1,5 +1,5 @@
-import SwiftUI
 import AppKit
+import SwiftUI
 
 public struct ControlButton: View {
     public let systemName: String
@@ -35,6 +35,6 @@ public struct ControlButton: View {
 
 #Preview {
     VStack {
-        ControlButton(systemName: "speaker.wave.3") { }.background(.black)
+        ControlButton(systemName: "speaker.wave.3") {}.background(.black)
     }.frame(width: 100, height: 100)
 }

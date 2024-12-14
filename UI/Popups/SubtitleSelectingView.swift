@@ -8,13 +8,13 @@ public struct SubtitleSelectingView: View {
     @State public var translateSubtitles: [SubtitleModel] = []
     @State public var selectedSubtitleID: UUID?
 
-
     // for public
     public init(embededSubtitles: [SubtitleModel],
                 externalSubtitles: [SubtitleModel],
                 transcribeSubtitles: [SubtitleModel],
                 translateSubtitles: [SubtitleModel],
-                selectedSubtitleID: UUID?) {
+                selectedSubtitleID: UUID?)
+    {
         self.embededSubtitles = embededSubtitles
         self.externalSubtitles = externalSubtitles
         self.transcribeSubtitles = transcribeSubtitles
@@ -36,7 +36,6 @@ public struct SubtitleSelectingView: View {
 
                 Section4(translateSubtitles: $translateSubtitles,
                          selectedSubtitleID: $selectedSubtitleID)
-
             }
         }
         .navigationTitle("设置")
@@ -53,7 +52,7 @@ struct Section1: View {
                 let sub = embededSubtitles[index]
                 Toggle(
                     isOn: Binding(
-                        get: { sub.id == selectedSubtitleID},
+                        get: { sub.id == selectedSubtitleID },
                         set: {
                             newValue in selectedSubtitleID = newValue ? sub.id : nil
                         }
@@ -90,7 +89,7 @@ struct Section2: View {
                 let sub = externalSubtitles[index]
                 Toggle(
                     isOn: Binding(
-                        get: { sub.id == selectedSubtitleID},
+                        get: { sub.id == selectedSubtitleID },
                         set: {
                             newValue in selectedSubtitleID = newValue ? sub.id : nil
                         }
@@ -118,16 +117,14 @@ struct Section2: View {
                 ) {
                     result in
                     switch result {
-                    case .success(let file):
+                    case let .success(file):
                         print("success \(file)")
-                    case .failure(let error):
+                    case let .failure(error):
                         print("failed \(error)")
                     }
                 }
             }
-
         }
-
     }
 }
 
