@@ -16,8 +16,8 @@ public class VideoStore {
 
     @MainActor
     public func insert(video: VideoModel) -> UUID {
-        video.id = UUID()
         container.mainContext.insert(video)
+        try? container.mainContext.save()
         return video.id
     }
 
@@ -63,9 +63,9 @@ public class VideoStore {
     }
 
     @MainActor
-    public func query(hash: String) -> VideoModel? {
+    public func query(fileHash: String) -> VideoModel? {
         let descriptor = FetchDescriptor<VideoModel>(
-            predicate: #Predicate<VideoModel> { $0.hash == hash }
+            predicate: #Predicate<VideoModel> { $0.fileHash == fileHash }
         )
         return try? container.mainContext.fetch(descriptor).first
     }

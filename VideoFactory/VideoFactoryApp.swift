@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 import Common
+import Engine
 import UI
 
 @main
@@ -16,9 +17,30 @@ struct VideoFactoryApp: App {
     var videoLayer = VideoLayer()
     var videoController = MpvController.shared
 
-    @StateObject var subtitlesViewModel = SubtitlesViewModel()
-    @State var isSelectingSubtitle: Bool = false
     @State var videoID: UUID?
+    @StateObject var subtitlesViewModel = SubtitlesViewModel()
+
+    @State var showSubtitleSelecingView: Bool = false
+    @State var showOpenFileDialog: Bool = false
+
+    var videoStore = VideoStore.shared
+
+    private func playVideoFile(_ filepath: String) {
+        let videoModel: VideoModel
+        // query database
+        if let model = videoStore.query(filepath: filepath) {
+            videoModel = model
+        } else {
+            videoModel = VideoModel()
+            videoModel.id = videoStore.insert(video: videoModel)
+        }
+//        videoID = videoModel.id
+//        subtitlesViewModel.fetchSubtitles(videoID: videoID)
+
+        // start playing
+        print("start playing \(filepath)")
+        videoLayer.tryLoadFile(filepath)
+    }
 
     var body: some Scene {
         return WindowGroup {
@@ -38,14 +60,14 @@ struct VideoFactoryApp: App {
 
                         Button("Update") {
                             subtitlesViewModel.fetchSubtitles(videoID: videoID)
-                            isSelectingSubtitle = true
+                            showSubtitleSelecingView = true
                         }
 
                         PlayerControlsView()
                             .padding(20)
                     }
 
-                    if isSelectingSubtitle {
+                    if showSubtitleSelecingView {
                         GeometryReader { geometry in
                             SubtitleSelectingView(
                                 embededSubtitles: subtitlesViewModel.embededSubtitles,
@@ -62,7 +84,7 @@ struct VideoFactoryApp: App {
                         }
                         .background(.gray.opacity(0.3))
                         .onTapGesture {
-                            isSelectingSubtitle = false
+                            showSubtitleSelecingView = false
                         }
                     }
                 }
@@ -73,7 +95,23 @@ struct VideoFactoryApp: App {
 
                 // let filepath = "/Users/jiechen/Downloads/scent-of-woman/out-of-order.mp4"
                 let filepath = "/Users/jiechen/Downloads/mp4-subs/OUTPUT.mp4"
-                videoLayer.tryLoadFile(filepath)
+                playVideoFile(filepath)
+            }
+            .fileImporter(
+                isPresented: $showOpenFileDialog,
+                allowedContentTypes: [.movie],
+                allowsMultipleSelection: false
+            ) {
+                result in
+                switch result {
+                case let .success(file):
+                    print("start playing \(file)")
+                    playVideoFile(file.first!.absoluteString)
+                case let .failure(error):
+                    print(
+                        "failed to open video file. \(error.localizedDescription)"
+                    )
+                }
             }
         }
         .windowStyle(.hiddenTitleBar)
@@ -82,9 +120,13 @@ struct VideoFactoryApp: App {
         .commands {
             FileMenuCommands(onOpenItemClicked: {
                 print("open item clicked")
+                showOpenFileDialog = true
             }, onQuitItemClicked: {
-                print(" clicked")
+                print("quit item clicked")
             })
+        }
+        .onChange(of: videoID) { _, newValue in
+            print("videoID change to \(String(describing: newValue))")
         }
     }
 }
@@ -102,14 +144,14 @@ struct FileMenuCommands: Commands {
         // this add ours options
         CommandGroup(after: CommandGroupPlacement.newItem) {
             Button("打开文件") {
-                print("打开文件")
+                if let onOpenItemClicked { onOpenItemClicked() }
             }
             .keyboardShortcut("O", modifiers: [.command])
 
             Divider()
 
             Button("退出") {
-                print("退出")
+                if let onQuitItemClicked { onQuitItemClicked() }
             }
             .keyboardShortcut("Q", modifiers: [.command])
         }

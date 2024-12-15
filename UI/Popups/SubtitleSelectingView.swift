@@ -7,6 +7,9 @@ public struct SubtitleSelectingView: View {
     @State public var transcribeSubtitles: [SubtitleModel] = []
     @State public var translateSubtitles: [SubtitleModel] = []
     @State public var selectedSubtitleID: UUID?
+    
+    @State private var showTranscribeView: Bool = false
+    @State private var showTranslateView: Bool = false
 
     // for public
     public init(embededSubtitles: [SubtitleModel],
@@ -32,10 +35,20 @@ public struct SubtitleSelectingView: View {
                          selectedSubtitleID: $selectedSubtitleID)
 
                 Section3(transcribeSubtitles: $transcribeSubtitles,
-                         selectedSubtitleID: $selectedSubtitleID)
+                         selectedSubtitleID: $selectedSubtitleID,
+                         showTranscribeView: $showTranscribeView
+                )
 
                 Section4(translateSubtitles: $translateSubtitles,
-                         selectedSubtitleID: $selectedSubtitleID)
+                         selectedSubtitleID: $selectedSubtitleID,
+                         showTranslateView: $showTranslateView
+                )
+            }
+            .navigationDestination(isPresented: $showTranscribeView) {
+                SubtitleTranscribe()
+            }
+            .navigationDestination(isPresented: $showTranslateView) {
+                SubtitleTranslate()
             }
         }
         .navigationTitle("设置")
@@ -132,39 +145,39 @@ struct Section2: View {
 struct Section3: View {
     @Binding var transcribeSubtitles: [SubtitleModel]
     @Binding var selectedSubtitleID: UUID?
-    @State private var showDetailView = false
+    @Binding var showTranscribeView: Bool
 
     var body: some View {
-        Section(header: Text("识别字幕")) {
-            ForEach(transcribeSubtitles.indices, id: \.self) { index in
-                let sub = transcribeSubtitles[index]
-                Toggle(
-                    isOn: Binding(
-                        get: { sub.id == selectedSubtitleID },
-                        set: { newValue in
-                            selectedSubtitleID = newValue ? sub.id : nil
+        VStack {
+            Section(header: Text("识别字幕")) {
+                ForEach(transcribeSubtitles.indices, id: \.self) { index in
+                    let sub = transcribeSubtitles[index]
+                    Toggle(
+                        isOn: Binding(
+                            get: { sub.id == selectedSubtitleID },
+                            set: { newValue in
+                                selectedSubtitleID = newValue ? sub.id : nil
+                            }
+                        )
+                    ) {
+                        HStack {
+                            Text("识别字幕 \(index)")
+                            Spacer()
+                            Text("英文")
+                                .foregroundColor(.gray)
                         }
-                    )
-                ) {
-                    HStack {
-                        Text("识别字幕 \(index)")
-                        Spacer()
-                        Text("英文")
-                            .foregroundColor(.gray)
                     }
                 }
-            }
 
-            VStack {
-                Button {
-                    showDetailView = true
-                } label: {
-                    Label("重新识别", systemImage: "arrow.clockwise.circle")
+                VStack {
+                    Button {
+                        showTranscribeView = true
+                    } label: {
+                        Label("重新识别", systemImage: "arrow.clockwise.circle")
+                    }
                 }
-            }
 
-        }.navigationDestination(isPresented: $showDetailView) {
-            SubtitleTranscribe()
+            }
         }
     }
 }
@@ -173,39 +186,39 @@ struct Section3: View {
 struct Section4: View {
     @Binding var translateSubtitles: [SubtitleModel]
     @Binding var selectedSubtitleID: UUID?
-    @State private var showDetailView = false
+    @Binding var showTranslateView: Bool
 
     var body: some View {
-        Section(header: Text("翻译字幕")) {
-            ForEach(translateSubtitles.indices, id: \.self) { index in
-                let sub = translateSubtitles[index]
-                Toggle(
-                    isOn: Binding(
-                        get: { sub.id == selectedSubtitleID },
-                        set: {
-                            newValue in selectedSubtitleID = newValue ? sub.id : nil
+        VStack {
+            Section(header: Text("翻译字幕")) {
+                ForEach(translateSubtitles.indices, id: \.self) { index in
+                    let sub = translateSubtitles[index]
+                    Toggle(
+                        isOn: Binding(
+                            get: { sub.id == selectedSubtitleID },
+                            set: {
+                                newValue in selectedSubtitleID = newValue ? sub.id : nil
+                            }
+                        )
+                    ) {
+                        HStack {
+                            Text("翻译字幕 \(index)")
+                            Spacer()
+                            Text("英文")
+                                .foregroundColor(.gray)
                         }
-                    )
-                ) {
-                    HStack {
-                        Text("翻译字幕 \(index)")
-                        Spacer()
-                        Text("英文")
-                            .foregroundColor(.gray)
                     }
                 }
-            }
-
-            VStack {
-                Button {
-                    showDetailView = true
-                } label: {
-                    Label("翻译更多", systemImage: "arrow.clockwise.circle")
+                
+                VStack {
+                    Button {
+                        showTranslateView = true
+                    } label: {
+                        Label("翻译更多", systemImage: "arrow.clockwise.circle")
+                    }
                 }
+                
             }
-
-        }.navigationDestination(isPresented: $showDetailView) {
-            SubtitleTranslate()
         }
     }
 }

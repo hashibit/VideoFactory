@@ -16,8 +16,8 @@ public class VideoModel {
     public var movieID: UUID
     public var filepath: String
     public var trackID: UUID
-    public var hash: String
-    public var filesize: Int64
+    public var fileHash: String
+    public var fileSize: Int64
     public var encMethod: String
     public var language: String
     public var duration: Int
@@ -34,8 +34,8 @@ public class VideoModel {
         self.movieID = movieID
         self.filepath = filepath
         self.trackID = trackID
-        self.hash = hash
-        self.filesize = filesize
+        self.fileHash = hash
+        self.fileSize = filesize
         self.encMethod = encMethod
         self.language = language
         self.duration = duration
@@ -108,8 +108,8 @@ public class VideoModel {
         self.movieID = source.movieID
         self.filepath = source.filepath
         self.trackID = source.trackID
-        self.filesize = source.filesize
-        self.hash = source.hash
+        self.fileSize = source.fileSize
+        self.fileHash = source.fileHash
         self.encMethod = source.encMethod
         self.language = source.language
         self.duration = source.duration
