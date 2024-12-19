@@ -11,6 +11,8 @@ import SwiftData
 public enum SubtitleOrigin: String {
     case transcribe
     case translate
+    case embeded
+    case external
 }
 
 @Model
@@ -21,7 +23,7 @@ public class SubtitleModel: Identifiable {
     public var origin: String
     public var movieID: UUID
     public var filepath: String
-    public var trackID: UUID
+    public var trackID: Int
     public var hash: String
     public var filesize: Int
     public var encMethod: String
@@ -31,7 +33,7 @@ public class SubtitleModel: Identifiable {
     public var updatedAt: Date
     public var deletedAt: Date
 
-    public init(id: UUID, parentID: UUID, origin: String, movieID: UUID, filepath: String, trackID: UUID,
+    public init(id: UUID, parentID: UUID, origin: String, movieID: UUID, filepath: String, trackID: Int,
          hash: String, filesize: Int, encMethod: String, language: String, duration: Int,
          createdAt: Date = Date(), updatedAt: Date = Date(), deletedAt: Date = Date()) {
         self.id = id
@@ -56,13 +58,27 @@ public class SubtitleModel: Identifiable {
                   origin : "",
                   movieID : UUID(),
                   filepath : "",
-                  trackID : UUID(),
+                  trackID : -1,
                   hash : "",
                   filesize : 0,
                   encMethod : "",
                   language : "",
                   duration : 0
         )
+    }
+
+    public convenience init(movieID: UUID, trackID: Int, origin: String, language: String) {
+        self.init(id: UUID(),
+                  parentID: UUID(),
+                  origin: origin,
+                  movieID: movieID,
+                  filepath: "",
+                  trackID: trackID,
+                  hash: "",
+                  filesize: 0,
+                  encMethod: "",
+                  language: language,
+                  duration: 0)
     }
 
     public func copy(from: SubtitleModel) {

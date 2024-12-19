@@ -1,8 +1,9 @@
 import Foundation
 import CryptoKit
 
-func generateHash(_ filepath: String) -> String? {
+public func generateHash(_ filepath: String) -> String? {
     guard let data = FileManager.default.contents(atPath: filepath) else {
+        print("failed to read file: \(filepath), not exists")
         return nil
     }
 

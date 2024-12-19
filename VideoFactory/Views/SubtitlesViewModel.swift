@@ -19,7 +19,7 @@ class SubtitlesViewModel: ObservableObject {
     @Published var selectedSubtitleID: UUID?
 
     @MainActor
-    func fetchSubtitles(videoID: UUID?) {
+    func fetchSubtitlesFromDB(videoID: UUID) {
         print("fetch subtitles for videoID: \(String(describing: videoID))")
         let allSubtitles = SubtitleStore.shared.query(videoID: videoID)
 
@@ -28,5 +28,15 @@ class SubtitlesViewModel: ObservableObject {
         externalSubtitles = allSubtitles.filter { $0.origin == "external" }
         transcribeSubtitles = allSubtitles.filter { $0.origin == "transcribe" }
         translateSubtitles = allSubtitles.filter { $0.origin == "translate" }
+    }
+
+    func loadSubtitlesFromTracks(_ videoID: UUID, _ trackList: [[String: Any]]) {
+        embededSubtitles = trackList.map {
+            SubtitleModel(movieID: videoID,
+                         trackID: $0["id"] as? Int ?? -1,
+                         origin: SubtitleOrigin.embeded.rawValue,
+                         language: $0["language"] as? String ?? "")
+        }
+        print("loaded subtitles from tracks: \(embededSubtitles)")
     }
 }

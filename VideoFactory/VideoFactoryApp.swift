@@ -26,16 +26,21 @@ struct VideoFactoryApp: App {
     var videoStore = VideoStore.shared
 
     private func playVideoFile(_ filepath: String) {
-        let videoModel: VideoModel
-        // query database
-        if let model = videoStore.query(filepath: filepath) {
-            videoModel = model
-        } else {
-            videoModel = VideoModel()
-            videoModel.id = videoStore.insert(video: videoModel)
+        guard let videoModel = videoStore.findOrCreateVideoModel(filepath) else {
+            print("failed to find video model at filepath: \(filepath), not ")
+            return
         }
-//        videoID = videoModel.id
-//        subtitlesViewModel.fetchSubtitles(videoID: videoID)
+
+        videoID = videoModel.id
+        subtitlesViewModel.fetchSubtitlesFromDB(videoID: videoID!)
+        videoLayer.registerEventCallback(type: .startFile, handler: { _ in
+            if let trackList: [[String: Any]] = videoLayer.mpvGetProperty(property: MpvProperty.trackList.rawValue) {
+                print("current trackList is: \(trackList)")
+                let subtitleTracks = trackList.filter { $0["type"] as? String == "sub" }
+                print("filtered subtitleTracks is: \(subtitleTracks)")
+                subtitlesViewModel.loadSubtitlesFromTracks(videoID!, subtitleTracks)
+            }
+        })
 
         // start playing
         print("start playing \(filepath)")
@@ -59,7 +64,7 @@ struct VideoFactoryApp: App {
                         Spacer()
 
                         Button("Update") {
-                            subtitlesViewModel.fetchSubtitles(videoID: videoID)
+                            subtitlesViewModel.fetchSubtitlesFromDB(videoID: videoID!)
                             showSubtitleSelecingView = true
                         }
 

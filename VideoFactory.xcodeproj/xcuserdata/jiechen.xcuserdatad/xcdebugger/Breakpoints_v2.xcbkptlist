@@ -31,9 +31,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "327"
-            endingLineNumber = "327"
-            landmarkName = "nodeToValue(_:)"
-            landmarkType = "7">
+            endingLineNumber = "327">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
