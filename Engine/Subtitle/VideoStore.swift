@@ -1,7 +1,7 @@
 
+import Common
 import Foundation
 import SwiftData
-import Common
 
 public class VideoStore {
     public static var shared = VideoStore()
@@ -11,7 +11,7 @@ public class VideoStore {
     private init() {
         let dbPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("vpv.db")
         let configuration = ModelConfiguration(url: dbPath)
-        self.container = try! ModelContainer(for: VideoModel.self, configurations: configuration)
+        container = try! ModelContainer(for: VideoModel.self, configurations: configuration)
     }
 
     @MainActor
@@ -47,34 +47,18 @@ public class VideoStore {
     }
 
     @MainActor
-    public func query(filepath: String) -> VideoModel? {
-        let descriptor = FetchDescriptor<VideoModel>(
-            predicate: #Predicate<VideoModel> { $0.filepath == filepath }
-        )
-        return try? container.mainContext.fetch(descriptor).first
-    }
-
-    @MainActor
-    public func query(movieID: UUID) -> VideoModel? {
-        let descriptor = FetchDescriptor<VideoModel>(
-            predicate: #Predicate<VideoModel> { $0.movieID == movieID }
-        )
-        return try? container.mainContext.fetch(descriptor).first
-    }
-
-    @MainActor
-    public func query(fileHash: String) -> VideoModel? {
-        let descriptor = FetchDescriptor<VideoModel>(
-            predicate: #Predicate<VideoModel> { $0.fileHash == fileHash }
-        )
-        return try? container.mainContext.fetch(descriptor).first
-    }
-
-    @MainActor
-    public func query(id: UUID) -> VideoModel? {
-        let descriptor = FetchDescriptor<VideoModel>(
-            predicate: #Predicate<VideoModel> { $0.id == id }
-        )
+    public func query(id: UUID? = nil, filepath: String? = nil, fileHash: String? = nil) -> VideoModel? {
+        guard id == nil, filepath == nil, fileHash == nil else { return nil }
+        let descriptor: FetchDescriptor<VideoModel>
+        if let id {
+            descriptor = FetchDescriptor<VideoModel>(predicate: #Predicate<VideoModel> { $0.id == id })
+        } else if let fileHash {
+            descriptor = FetchDescriptor<VideoModel>(predicate: #Predicate<VideoModel> { $0.fileHash == fileHash })
+        } else if let filepath {
+            descriptor = FetchDescriptor<VideoModel>(predicate: #Predicate<VideoModel> { $0.filepath == filepath })
+        } else {
+            return nil
+        }
         return try? container.mainContext.fetch(descriptor).first
     }
 
@@ -90,5 +74,4 @@ public class VideoStore {
         }
         return nil
     }
-
 }
