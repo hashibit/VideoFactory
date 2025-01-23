@@ -18,7 +18,7 @@ struct VideoFactoryApp: App {
     var videoController = MpvController.shared
 
     @State var videoID: UUID?
-    @StateObject var subtitlesViewModel = SubtitlesViewModel()
+    @State var subtitlesViewModel = SubtitlesViewModel()
 
     @State var showSubtitleSelecingView: Bool = false
     @State var showOpenFileDialog: Bool = false
@@ -33,12 +33,14 @@ struct VideoFactoryApp: App {
 
         videoID = videoModel.id
         subtitlesViewModel.fetchSubtitlesFromDB(videoID: videoID!)
-        videoLayer.registerEventCallback(type: .startFile, handler: { _ in
+        videoLayer.registerEventCallback(type: .fileLoaded, handler: { _ in
             if let trackList: [[String: Any]] = videoLayer.mpvGetProperty(property: MpvProperty.trackList.rawValue) {
                 print("current trackList is: \(trackList)")
                 let subtitleTracks = trackList.filter { $0["type"] as? String == "sub" }
                 print("filtered subtitleTracks is: \(subtitleTracks)")
-                subtitlesViewModel.loadSubtitlesFromTracks(videoID!, subtitleTracks)
+                Task { @MainActor in
+                    subtitlesViewModel.loadSubtitlesFromTracks(videoID!, subtitleTracks)
+                }
             }
         })
 
@@ -64,7 +66,6 @@ struct VideoFactoryApp: App {
                         Spacer()
 
                         Button("Update") {
-                            subtitlesViewModel.fetchSubtitlesFromDB(videoID: videoID!)
                             showSubtitleSelecingView = true
                         }
 
@@ -75,11 +76,11 @@ struct VideoFactoryApp: App {
                     if showSubtitleSelecingView {
                         GeometryReader { geometry in
                             SubtitleSelectingView(
-                                embededSubtitles: subtitlesViewModel.embededSubtitles,
-                                externalSubtitles: subtitlesViewModel.externalSubtitles,
-                                transcribeSubtitles: subtitlesViewModel.transcribeSubtitles,
-                                translateSubtitles: subtitlesViewModel.translateSubtitles,
-                                selectedSubtitleID: subtitlesViewModel.selectedSubtitleID
+                                embededSubtitles: $subtitlesViewModel.embededSubtitles,
+                                externalSubtitles: $subtitlesViewModel.externalSubtitles,
+                                transcribeSubtitles: $subtitlesViewModel.transcribeSubtitles,
+                                translateSubtitles: $subtitlesViewModel.translateSubtitles,
+                                selectedSubtitleID: $subtitlesViewModel.selectedSubtitleID
                             )
                             .frame(width: 500, height: 300)
                             .position(
@@ -94,11 +95,14 @@ struct VideoFactoryApp: App {
                     }
                 }
             }
+            .onChange(of: subtitlesViewModel.embededSubtitles) { _, newValue in
+                print("embeded subtitles change to \(newValue)")
+            }
             .background(.black)
             .onAppear {
                 videoController.control(videoLayer: videoLayer)
 
-                // let filepath = "/Users/jiechen/Downloads/scent-of-woman/out-of-order.mp4"
+//                 let filepath = "/Users/jiechen/Downloads/scent-of-woman/out-of-order.mp4"
                 let filepath = "/Users/jiechen/Downloads/mp4-subs/OUTPUT.mp4"
                 playVideoFile(filepath)
             }

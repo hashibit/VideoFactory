@@ -10,15 +10,16 @@ import Foundation
 import Common
 import Engine
 
-class SubtitlesViewModel: ObservableObject {
-    @Published var embededSubtitles: [SubtitleModel] = []
-    @Published var externalSubtitles: [SubtitleModel] = []
-    @Published var transcribeSubtitles: [SubtitleModel] = []
-    @Published var translateSubtitles: [SubtitleModel] = []
+@MainActor
+@Observable
+public class SubtitlesViewModel {
+    public var embededSubtitles: [SubtitleModel] = []
+    public var externalSubtitles: [SubtitleModel] = []
+    public var transcribeSubtitles: [SubtitleModel] = []
+    public var translateSubtitles: [SubtitleModel] = []
 
-    @Published var selectedSubtitleID: UUID?
+    public var selectedSubtitleID: UUID?
 
-    @MainActor
     func fetchSubtitlesFromDB(videoID: UUID) {
         print("fetch subtitles for videoID: \(String(describing: videoID))")
         let allSubtitles = SubtitleStore.shared.query(videoID: videoID)
@@ -31,6 +32,7 @@ class SubtitlesViewModel: ObservableObject {
     }
 
     func loadSubtitlesFromTracks(_ videoID: UUID, _ trackList: [[String: Any]]) {
+        print("call loadSubtitlesFromTracks, trackList: \(trackList)")
         embededSubtitles = trackList.map {
             SubtitleModel(movieID: videoID,
                          trackID: $0["id"] as? Int ?? -1,

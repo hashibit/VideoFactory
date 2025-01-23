@@ -2,27 +2,27 @@ import Common
 import SwiftUI
 
 public struct SubtitleSelectingView: View {
-    @State public var embededSubtitles: [SubtitleModel] = []
-    @State public var externalSubtitles: [SubtitleModel] = []
-    @State public var transcribeSubtitles: [SubtitleModel] = []
-    @State public var translateSubtitles: [SubtitleModel] = []
-    @State public var selectedSubtitleID: UUID?
-    
+    @Binding public var embededSubtitles: [SubtitleModel]
+    @Binding public var externalSubtitles: [SubtitleModel]
+    @Binding public var transcribeSubtitles: [SubtitleModel]
+    @Binding public var translateSubtitles: [SubtitleModel]
+    @Binding public var selectedSubtitleID: UUID?
+
     @State private var showTranscribeView: Bool = false
     @State private var showTranslateView: Bool = false
 
-    // for public
-    public init(embededSubtitles: [SubtitleModel],
-                externalSubtitles: [SubtitleModel],
-                transcribeSubtitles: [SubtitleModel],
-                translateSubtitles: [SubtitleModel],
-                selectedSubtitleID: UUID?)
-    {
-        self.embededSubtitles = embededSubtitles
-        self.externalSubtitles = externalSubtitles
-        self.transcribeSubtitles = transcribeSubtitles
-        self.translateSubtitles = translateSubtitles
-        self.selectedSubtitleID = selectedSubtitleID
+    public init(
+        embededSubtitles: Binding<[SubtitleModel]>,
+        externalSubtitles: Binding<[SubtitleModel]>,
+        transcribeSubtitles: Binding<[SubtitleModel]>,
+        translateSubtitles: Binding<[SubtitleModel]>,
+        selectedSubtitleID: Binding<UUID?>
+    ) {
+        _embededSubtitles = embededSubtitles
+        _externalSubtitles = externalSubtitles
+        _transcribeSubtitles = transcribeSubtitles
+        _translateSubtitles = translateSubtitles
+        _selectedSubtitleID = selectedSubtitleID
     }
 
     public var body: some View {
@@ -79,13 +79,12 @@ struct Section1: View {
                     }
                 }
             }
-
-            NavigationLink(destination: Text("归档的聊天记录")) {
-                HStack {
-                    Image(systemName: "tray")
-                    Text("已归档的聊天")
-                }
-            }
+        }
+        .onChange(of: embededSubtitles) { _, newValue in
+            print("Section1 changed with \(newValue.count) subtitles")
+        }
+        .onAppear {
+            print("Section1 appeared with \(embededSubtitles.count) subtitles")
         }
     }
 }
@@ -148,7 +147,6 @@ struct Section3: View {
     @Binding var showTranscribeView: Bool
 
     var body: some View {
-        VStack {
             Section(header: Text("识别字幕")) {
                 ForEach(transcribeSubtitles.indices, id: \.self) { index in
                     let sub = transcribeSubtitles[index]
@@ -178,7 +176,6 @@ struct Section3: View {
                 }
 
             }
-        }
     }
 }
 
@@ -189,7 +186,6 @@ struct Section4: View {
     @Binding var showTranslateView: Bool
 
     var body: some View {
-        VStack {
             Section(header: Text("翻译字幕")) {
                 ForEach(translateSubtitles.indices, id: \.self) { index in
                     let sub = translateSubtitles[index]
@@ -209,7 +205,7 @@ struct Section4: View {
                         }
                     }
                 }
-                
+
                 VStack {
                     Button {
                         showTranslateView = true
@@ -217,9 +213,8 @@ struct Section4: View {
                         Label("翻译更多", systemImage: "arrow.clockwise.circle")
                     }
                 }
-                
+
             }
-        }
     }
 }
 
@@ -238,11 +233,11 @@ struct SubtitleSelectingView_Previews: PreviewProvider {
     ]
     static var previews: some View {
         SubtitleSelectingView(
-            embededSubtitles: embededSubtitles,
-            externalSubtitles: externalSubtitles,
-            transcribeSubtitles: transcribeSubtitles,
-            translateSubtitles: translateSubtitles,
-            selectedSubtitleID: nil
+            embededSubtitles: .constant(embededSubtitles),
+            externalSubtitles: .constant(externalSubtitles),
+            transcribeSubtitles: .constant(transcribeSubtitles),
+            translateSubtitles: .constant(translateSubtitles),
+            selectedSubtitleID: .constant(nil)
         )
     }
 }
