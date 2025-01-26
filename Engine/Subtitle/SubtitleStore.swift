@@ -4,11 +4,19 @@ import Common
 
 public class SubtitleStore {
     public static var shared = SubtitleStore()
+    let removeOldDB = true;
 
     let container: ModelContainer
 
     private init() {
         let dbPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("vps.db")
+        if removeOldDB {
+            do {
+                try FileManager.default.removeItem(at: dbPath)
+            } catch {
+                print("failed to remove old db file: \(dbPath), err: \(error)")
+            }
+        }
         let configuration = ModelConfiguration(url: dbPath)
         self.container = try! ModelContainer(for: SubtitleModel.self, configurations: configuration)
     }
@@ -62,9 +70,9 @@ public class SubtitleStore {
     }
 
     @MainActor
-    public func query(hash: String) -> SubtitleModel? {
+    public func query(fileHash: String) -> SubtitleModel? {
         let descriptor = FetchDescriptor<SubtitleModel>(
-            predicate: #Predicate<SubtitleModel> { $0.hash == hash }
+            predicate: #Predicate<SubtitleModel> { $0.fileHash == fileHash }
         )
         return try? container.mainContext.fetch(descriptor).first
     }

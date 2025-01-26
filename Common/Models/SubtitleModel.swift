@@ -24,7 +24,7 @@ public class SubtitleModel: Identifiable {
     public var movieID: UUID
     public var filepath: String
     public var trackID: Int
-    public var hash: String
+    public var fileHash: String
     public var filesize: Int
     public var encMethod: String
     public var language: String
@@ -34,7 +34,7 @@ public class SubtitleModel: Identifiable {
     public var deletedAt: Date
 
     public init(id: UUID, parentID: UUID, origin: String, movieID: UUID, filepath: String, trackID: Int,
-         hash: String, filesize: Int, encMethod: String, language: String, duration: Int,
+         fileHash: String, filesize: Int, encMethod: String, language: String, duration: Int,
          createdAt: Date = Date(), updatedAt: Date = Date(), deletedAt: Date = Date()) {
         self.id = id
         self.parentID = parentID
@@ -42,7 +42,7 @@ public class SubtitleModel: Identifiable {
         self.movieID = movieID
         self.filepath = filepath
         self.trackID = trackID
-        self.hash = hash
+        self.fileHash = fileHash
         self.filesize = filesize
         self.encMethod = encMethod
         self.language = language
@@ -59,7 +59,7 @@ public class SubtitleModel: Identifiable {
                   movieID : UUID(),
                   filepath : "",
                   trackID : -1,
-                  hash : "",
+                  fileHash : "",
                   filesize : 0,
                   encMethod : "",
                   language : "",
@@ -74,7 +74,7 @@ public class SubtitleModel: Identifiable {
                   movieID: movieID,
                   filepath: "",
                   trackID: trackID,
-                  hash: "",
+                  fileHash: "",
                   filesize: 0,
                   encMethod: "",
                   language: language,
@@ -87,7 +87,7 @@ public class SubtitleModel: Identifiable {
         self.movieID = from.movieID
         self.filepath = from.filepath
         self.trackID = from.trackID
-        self.hash = from.hash
+        self.fileHash = from.fileHash
         self.filesize = from.filesize
         self.encMethod = from.encMethod
         self.language = from.language

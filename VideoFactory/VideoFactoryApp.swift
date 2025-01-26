@@ -85,7 +85,7 @@ struct VideoFactoryApp: App {
                                     subtitlesViewModel.updateOrInsertSubtitle(subtitle)
                                 }
                             )
-                            .frame(width: 500, height: 300)
+                            .frame(width: 800, height: 600)
                             .position(
                                 x: geometry.size.width / 2,
                                 y: geometry.size.height / 2

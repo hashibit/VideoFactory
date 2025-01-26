@@ -46,6 +46,7 @@ public class SubtitlesViewModel {
 
     // 更新或插入字幕
     func updateOrInsertSubtitle(_ subtitle: SubtitleModel) {
+        print("updateOrInsertSubtitle: \(subtitle)")
         // 1. 更新数据库
         store.upsert(id: subtitle.id, subtitle: subtitle)
 

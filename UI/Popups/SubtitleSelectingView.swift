@@ -141,9 +141,10 @@ struct Section2: View {
                 switch result {
                 case let .success(file):
                     print("success \(file)")
-                    let subtitle = SubtitleModel()
                     if let path = file.first?.path {
+                        let subtitle = SubtitleModel()
                         subtitle.filepath = path
+                        subtitle.origin = "external"
                         onInsertOrUpdateSubtitle?(subtitle)
                     }
                 case let .failure(error):
