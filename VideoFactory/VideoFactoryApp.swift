@@ -80,7 +80,10 @@ struct VideoFactoryApp: App {
                                 externalSubtitles: $subtitlesViewModel.externalSubtitles,
                                 transcribeSubtitles: $subtitlesViewModel.transcribeSubtitles,
                                 translateSubtitles: $subtitlesViewModel.translateSubtitles,
-                                selectedSubtitleID: $subtitlesViewModel.selectedSubtitleID
+                                selectedSubtitleID: $subtitlesViewModel.selectedSubtitleID,
+                                onInsertOrUpdateSubtitle: { subtitle in
+                                    subtitlesViewModel.updateOrInsertSubtitle(subtitle)
+                                }
                             )
                             .frame(width: 500, height: 300)
                             .position(

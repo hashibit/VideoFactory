@@ -8,6 +8,8 @@ public struct SubtitleSelectingView: View {
     @Binding public var translateSubtitles: [SubtitleModel]
     @Binding public var selectedSubtitleID: UUID?
 
+    public var onInsertOrUpdateSubtitle: (SubtitleModel) -> Void
+
     @State private var showTranscribeView: Bool = false
     @State private var showTranslateView: Bool = false
 
@@ -16,13 +18,15 @@ public struct SubtitleSelectingView: View {
         externalSubtitles: Binding<[SubtitleModel]>,
         transcribeSubtitles: Binding<[SubtitleModel]>,
         translateSubtitles: Binding<[SubtitleModel]>,
-        selectedSubtitleID: Binding<UUID?>
+        selectedSubtitleID: Binding<UUID?>,
+        onInsertOrUpdateSubtitle: @escaping (SubtitleModel) -> Void
     ) {
         _embededSubtitles = embededSubtitles
         _externalSubtitles = externalSubtitles
         _transcribeSubtitles = transcribeSubtitles
         _translateSubtitles = translateSubtitles
         _selectedSubtitleID = selectedSubtitleID
+        self.onInsertOrUpdateSubtitle = onInsertOrUpdateSubtitle
     }
 
     public var body: some View {
@@ -32,7 +36,8 @@ public struct SubtitleSelectingView: View {
                          selectedSubtitleID: $selectedSubtitleID)
 
                 Section2(externalSubtitles: $externalSubtitles,
-                         selectedSubtitleID: $selectedSubtitleID)
+                         selectedSubtitleID: $selectedSubtitleID,
+                         onInsertOrUpdateSubtitle: onInsertOrUpdateSubtitle)
 
                 Section3(transcribeSubtitles: $transcribeSubtitles,
                          selectedSubtitleID: $selectedSubtitleID,
@@ -80,9 +85,6 @@ struct Section1: View {
                 }
             }
         }
-        .onChange(of: embededSubtitles) { _, newValue in
-            print("Section1 changed with \(newValue.count) subtitles")
-        }
         .onAppear {
             print("Section1 appeared with \(embededSubtitles.count) subtitles")
         }
@@ -93,47 +95,59 @@ struct Section2: View {
     @Binding var externalSubtitles: [SubtitleModel]
     @Binding var selectedSubtitleID: UUID?
 
+    var onInsertOrUpdateSubtitle: ((SubtitleModel) -> Void)?
+
     @State var showFileImporter: Bool = false
 
     var body: some View {
         Section(header: Text("外部字幕")) {
-            ForEach(externalSubtitles.indices, id: \.self) { index in
-                let sub = externalSubtitles[index]
-                Toggle(
-                    isOn: Binding(
-                        get: { sub.id == selectedSubtitleID },
-                        set: {
-                            newValue in selectedSubtitleID = newValue ? sub.id : nil
-                        }
-                    )
-                ) {
-                    HStack {
-                        Text("外部字幕 \(index)")
-                        Spacer()
-                        Text("英文")
-                            .foregroundColor(.gray)
+            content()
+        }
+    }
+
+    @ViewBuilder
+    private func content() -> some View {
+        ForEach(externalSubtitles.indices, id: \.self) { index in
+            let sub = externalSubtitles[index]
+            Toggle(
+                isOn: Binding(
+                    get: { sub.id == selectedSubtitleID },
+                    set: {
+                        newValue in selectedSubtitleID = newValue ? sub.id : nil
                     }
+                )
+            ) {
+                HStack {
+                    Text("外部字幕 \(index)")
+                    Spacer()
+                    Text("英文")
+                        .foregroundColor(.gray)
                 }
             }
+        }
 
-            HStack {
-                Button {
-                    showFileImporter = true
-                } label: {
-                    Label("添加外部字幕...", systemImage: "arrow.clockwise.circle")
-                }
-                .fileImporter(
-                    isPresented: $showFileImporter,
-                    allowedContentTypes: [.text],
-                    allowsMultipleSelection: false
-                ) {
-                    result in
-                    switch result {
-                    case let .success(file):
-                        print("success \(file)")
-                    case let .failure(error):
-                        print("failed \(error)")
+        HStack {
+            Button {
+                showFileImporter = true
+            } label: {
+                Label("添加外部字幕...", systemImage: "arrow.clockwise.circle")
+            }
+            .fileImporter(
+                isPresented: $showFileImporter,
+                allowedContentTypes: [.vtt, .srt],
+                allowsMultipleSelection: false
+            ) {
+                result in
+                switch result {
+                case let .success(file):
+                    print("success \(file)")
+                    let subtitle = SubtitleModel()
+                    if let path = file.first?.path {
+                        subtitle.filepath = path
+                        onInsertOrUpdateSubtitle?(subtitle)
                     }
+                case let .failure(error):
+                    print("failed \(error)")
                 }
             }
         }
@@ -237,7 +251,10 @@ struct SubtitleSelectingView_Previews: PreviewProvider {
             externalSubtitles: .constant(externalSubtitles),
             transcribeSubtitles: .constant(transcribeSubtitles),
             translateSubtitles: .constant(translateSubtitles),
-            selectedSubtitleID: .constant(nil)
+            selectedSubtitleID: .constant(nil),
+            onInsertOrUpdateSubtitle: { subtitle in
+                print("insert or update subtitle: \(subtitle)")
+            }
         )
     }
 }
