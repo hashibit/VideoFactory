@@ -8,6 +8,7 @@
 import SwiftData
 import SwiftUI
 
+import Engine
 import Common
 import UI
 
@@ -17,6 +18,7 @@ struct VideoFactoryApp: App {
     var videoController = MpvController.shared
 
     @State var videoID: UUID?
+    @State var videoFilepath: String?
     @State var subtitlesViewModel = SubtitlesViewModel()
 
     @State var showSubtitleSelecingView: Bool = false
@@ -31,6 +33,7 @@ struct VideoFactoryApp: App {
         }
 
         videoID = videoModel.id
+        videoFilepath = videoModel.filepath
         subtitlesViewModel.fetchSubtitlesFromDB(videoID: videoID!)
         videoLayer.registerEventCallback(type: .fileLoaded, handler: { _ in
             if let trackList: [[String: Any]] = videoLayer.mpvGetProperty(property: MpvProperty.trackList.rawValue) {
@@ -65,7 +68,17 @@ struct VideoFactoryApp: App {
                         Spacer()
 
                         Button("Update") {
-                            showSubtitleSelecingView = true
+//                            showSubtitleSelecingView = true
+
+                            // 获取缓存目录路径
+                            let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+                            // 构建完整的文件路径
+                            let pcmPath = cacheDir.appendingPathComponent("output_audio.wav")
+                            Engine.shared
+                                .extractAudioFromVideo(
+                                    videoFilepath!,
+                                    pcmPath.path()
+                                )
                         }
 
                         PlayerControlsView()
@@ -107,8 +120,8 @@ struct VideoFactoryApp: App {
             .onAppear {
                 videoController.control(videoLayer: videoLayer)
 
-//                 let filepath = "/Users/jiechen/Downloads/scent-of-woman/out-of-order.mp4"
-                let filepath = "/Users/jiechen/Downloads/mp4-subs/OUTPUT.mp4"
+                let filepath = "/Users/jiechen/Downloads/scent-of-woman/out-of-order.mp4"
+//                let filepath = "/Users/jiechen/Downloads/mp4-subs/OUTPUT.mp4"
                 playVideoFile(filepath)
             }
             .fileImporter(

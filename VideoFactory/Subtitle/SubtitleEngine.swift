@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Engine
 
 public enum FactoryError: Error {
     case taskAlreadyRunning
@@ -63,6 +64,9 @@ public class SubtitleEngine {
     }
 
     private func doExtractAudio(_ videoFilePath: String) async -> String? {
+        let outputAudioFilepath = "/tmp/audio.pcm"
+        Engine.shared.extractAudioFromVideo(videoFilePath, outputAudioFilepath)
+
 //        let extractor = FFmpegAudioProcessorImpl()
         return ""
     }

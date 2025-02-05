@@ -10,6 +10,8 @@
 public struct Engine {
     private let bridge = AudioProcessorBridge()
 
+    public static let shared = Engine();
+
     public func extractAudioFromVideo(_ videoFilepath: String, _ audioFilepath: String) {
         bridge.extractAudio(fromVideo: videoFilepath, output: audioFilepath)
     }
