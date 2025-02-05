@@ -68,7 +68,7 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2245637E2D05E3EF0059242D"
+               BlueprintIdentifier = "224BD2BD2D530BD600E32DBB"
                BuildableName = "EngineTests.xctest"
                BlueprintName = "EngineTests"
                ReferencedContainer = "container:VideoFactory.xcodeproj">
@@ -82,6 +82,17 @@
                BlueprintIdentifier = "224563B92D073B210059242D"
                BuildableName = "CommonTests.xctest"
                BlueprintName = "CommonTests"
+               ReferencedContainer = "container:VideoFactory.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "224BD4662D53506B00E32DBB"
+               BuildableName = "SubGeneratorTests.xctest"
+               BlueprintName = "SubGeneratorTests"
                ReferencedContainer = "container:VideoFactory.xcodeproj">
             </BuildableReference>
          </TestableReference>

@@ -15,6 +15,9 @@
 		224563C72D073B210059242D /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 224563B12D073B210059242D /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		224563DC2D073B770059242D /* Common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224563B12D073B210059242D /* Common.framework */; };
 		224563DD2D073B770059242D /* Common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 224563B12D073B210059242D /* Common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		224BD2BF2D530BD600E32DBB /* Engine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224BD2B72D530BD600E32DBB /* Engine.framework */; };
+		224BD2CA2D530BD600E32DBB /* Engine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 224BD2B72D530BD600E32DBB /* Engine.framework */; };
+		224BD2CB2D530BD600E32DBB /* Engine.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 224BD2B72D530BD600E32DBB /* Engine.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		224E86CF2D4F160A0040D96E /* ExternalTools in Resources */ = {isa = PBXBuildFile; fileRef = 224E86CE2D4F160A0040D96E /* ExternalTools */; };
 		22B1B3972CFE0CDF003EA919 /* libmpv.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 22B1B3962CFE0CDF003EA919 /* libmpv.2.dylib */; };
 /* End PBXBuildFile section */
@@ -69,6 +72,27 @@
 			remoteGlobalIDString = 224563B02D073B210059242D;
 			remoteInfo = Common;
 		};
+		224BD2C02D530BD600E32DBB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22B378C02CF92D4A000B72E9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 224BD2B62D530BD600E32DBB;
+			remoteInfo = Engine;
+		};
+		224BD2C22D530BD600E32DBB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22B378C02CF92D4A000B72E9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 22B378C72CF92D4B000B72E9;
+			remoteInfo = VideoFactory;
+		};
+		224BD2C82D530BD600E32DBB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 22B378C02CF92D4A000B72E9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 224BD2B62D530BD600E32DBB;
+			remoteInfo = Engine;
+		};
 		22B378DC2CF92D4C000B72E9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 22B378C02CF92D4A000B72E9 /* Project object */;
@@ -94,6 +118,7 @@
 			files = (
 				224563C72D073B210059242D /* Common.framework in Embed Frameworks */,
 				220A79742D05940E000A6269 /* UI.framework in Embed Frameworks */,
+				224BD2CB2D530BD600E32DBB /* Engine.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -116,6 +141,8 @@
 		220A79672D05940E000A6269 /* UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		224563B12D073B210059242D /* Common.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Common.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		224563BA2D073B210059242D /* CommonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CommonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		224BD2B72D530BD600E32DBB /* Engine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Engine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		224BD2BE2D530BD600E32DBB /* EngineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EngineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		224E86CE2D4F160A0040D96E /* ExternalTools */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ExternalTools; sourceTree = "<group>"; };
 		22B1B3962CFE0CDF003EA919 /* libmpv.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmpv.2.dylib; path = ../../../../../../opt/homebrew/Cellar/mpv/0.39.0_1/lib/libmpv.2.dylib; sourceTree = "<group>"; };
 		22B378C82CF92D4B000B72E9 /* VideoFactory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VideoFactory.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -138,52 +165,18 @@
 			);
 			target = 224563B02D073B210059242D /* Common */;
 		};
+		224BD2CF2D530BD600E32DBB /* Exceptions for "Engine" folder in "Engine" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			publicHeaders = (
+				AudioProcessorBridge.h,
+				Engine.h,
+			);
+			target = 224BD2B62D530BD600E32DBB /* Engine */;
+		};
 		224E86CD2D4F15EF0040D96E /* Exceptions for "VideoFactory" folder in "VideoFactory" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Assets.xcassets,
-				"audio-processor/cpp-channel/include/msd/channel.inl",
-				"audio-processor/ffmpeg_processor_impl.cpp",
-				"audio-processor/FFmpeg-7.1/lib/libavcodec.61.19.100.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavcodec.61.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavcodec.a",
-				"audio-processor/FFmpeg-7.1/lib/libavcodec.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavdevice.61.3.100.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavdevice.61.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavdevice.a",
-				"audio-processor/FFmpeg-7.1/lib/libavdevice.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavfilter.10.4.100.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavfilter.10.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavfilter.a",
-				"audio-processor/FFmpeg-7.1/lib/libavfilter.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavformat.61.7.100.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavformat.61.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavformat.a",
-				"audio-processor/FFmpeg-7.1/lib/libavformat.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavutil.59.39.100.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavutil.59.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libavutil.a",
-				"audio-processor/FFmpeg-7.1/lib/libavutil.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libpostproc.58.3.100.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libpostproc.58.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libpostproc.a",
-				"audio-processor/FFmpeg-7.1/lib/libpostproc.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libswresample.5.3.100.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libswresample.5.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libswresample.a",
-				"audio-processor/FFmpeg-7.1/lib/libswresample.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libswscale.8.3.100.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libswscale.8.dylib",
-				"audio-processor/FFmpeg-7.1/lib/libswscale.a",
-				"audio-processor/FFmpeg-7.1/lib/libswscale.dylib",
-				"audio-processor/FFmpeg-7.1/lib/pkgconfig/libavcodec.pc",
-				"audio-processor/FFmpeg-7.1/lib/pkgconfig/libavdevice.pc",
-				"audio-processor/FFmpeg-7.1/lib/pkgconfig/libavfilter.pc",
-				"audio-processor/FFmpeg-7.1/lib/pkgconfig/libavformat.pc",
-				"audio-processor/FFmpeg-7.1/lib/pkgconfig/libavutil.pc",
-				"audio-processor/FFmpeg-7.1/lib/pkgconfig/libpostproc.pc",
-				"audio-processor/FFmpeg-7.1/lib/pkgconfig/libswresample.pc",
-				"audio-processor/FFmpeg-7.1/lib/pkgconfig/libswscale.pc",
 				"Preview Content/Preview Assets.xcassets",
 				tasks.txt,
 			);
@@ -216,6 +209,19 @@
 		224563C02D073B210059242D /* CommonTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = CommonTests;
+			sourceTree = "<group>";
+		};
+		224BD2B82D530BD600E32DBB /* Engine */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				224BD2CF2D530BD600E32DBB /* Exceptions for "Engine" folder in "Engine" target */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		224BD2C42D530BD600E32DBB /* EngineTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = EngineTests;
 			sourceTree = "<group>";
 		};
 		22B378CA2CF92D4B000B72E9 /* VideoFactory */ = {
@@ -270,12 +276,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		224BD2B42D530BD600E32DBB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		224BD2BB2D530BD600E32DBB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				224BD2BF2D530BD600E32DBB /* Engine.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		22B378C52CF92D4B000B72E9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				220A79732D05940E000A6269 /* UI.framework in Frameworks */,
 				224563C62D073B210059242D /* Common.framework in Frameworks */,
+				224BD2CA2D530BD600E32DBB /* Engine.framework in Frameworks */,
 				22B1B3972CFE0CDF003EA919 /* libmpv.2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -316,6 +338,8 @@
 				220A796D2D05940E000A6269 /* UITests */,
 				224563B22D073B210059242D /* Common */,
 				224563C02D073B210059242D /* CommonTests */,
+				224BD2B82D530BD600E32DBB /* Engine */,
+				224BD2C42D530BD600E32DBB /* EngineTests */,
 				22B1B37B2CFA1F1D003EA919 /* Frameworks */,
 				22B378C92CF92D4B000B72E9 /* Products */,
 			);
@@ -331,6 +355,8 @@
 				220A79672D05940E000A6269 /* UITests.xctest */,
 				224563B12D073B210059242D /* Common.framework */,
 				224563BA2D073B210059242D /* CommonTests.xctest */,
+				224BD2B72D530BD600E32DBB /* Engine.framework */,
+				224BD2BE2D530BD600E32DBB /* EngineTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -346,6 +372,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		224563AC2D073B210059242D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		224BD2B22D530BD600E32DBB /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -451,6 +484,53 @@
 			productReference = 224563BA2D073B210059242D /* CommonTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		224BD2B62D530BD600E32DBB /* Engine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 224BD2CC2D530BD600E32DBB /* Build configuration list for PBXNativeTarget "Engine" */;
+			buildPhases = (
+				224BD2B22D530BD600E32DBB /* Headers */,
+				224BD2B32D530BD600E32DBB /* Sources */,
+				224BD2B42D530BD600E32DBB /* Frameworks */,
+				224BD2B52D530BD600E32DBB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				224BD2B82D530BD600E32DBB /* Engine */,
+			);
+			name = Engine;
+			packageProductDependencies = (
+			);
+			productName = Engine;
+			productReference = 224BD2B72D530BD600E32DBB /* Engine.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		224BD2BD2D530BD600E32DBB /* EngineTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 224BD2D02D530BD600E32DBB /* Build configuration list for PBXNativeTarget "EngineTests" */;
+			buildPhases = (
+				224BD2BA2D530BD600E32DBB /* Sources */,
+				224BD2BB2D530BD600E32DBB /* Frameworks */,
+				224BD2BC2D530BD600E32DBB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				224BD2C12D530BD600E32DBB /* PBXTargetDependency */,
+				224BD2C32D530BD600E32DBB /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				224BD2C42D530BD600E32DBB /* EngineTests */,
+			);
+			name = EngineTests;
+			packageProductDependencies = (
+			);
+			productName = EngineTests;
+			productReference = 224BD2BE2D530BD600E32DBB /* EngineTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		22B378C72CF92D4B000B72E9 /* VideoFactory */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 22B378EF2CF92D4C000B72E9 /* Build configuration list for PBXNativeTarget "VideoFactory" */;
@@ -465,6 +545,7 @@
 			dependencies = (
 				220A79722D05940E000A6269 /* PBXTargetDependency */,
 				224563C52D073B210059242D /* PBXTargetDependency */,
+				224BD2C92D530BD600E32DBB /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				22B378CA2CF92D4B000B72E9 /* VideoFactory */,
@@ -529,7 +610,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1610;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					220A795D2D05940E000A6269 = {
@@ -544,6 +625,14 @@
 					};
 					224563B92D073B210059242D = {
 						CreatedOnToolsVersion = 16.1;
+						TestTargetID = 22B378C72CF92D4B000B72E9;
+					};
+					224BD2B62D530BD600E32DBB = {
+						CreatedOnToolsVersion = 16.2;
+						LastSwiftMigration = 1620;
+					};
+					224BD2BD2D530BD600E32DBB = {
+						CreatedOnToolsVersion = 16.2;
 						TestTargetID = 22B378C72CF92D4B000B72E9;
 					};
 					22B378C72CF92D4B000B72E9 = {
@@ -583,6 +672,8 @@
 				220A79662D05940E000A6269 /* UITests */,
 				224563B02D073B210059242D /* Common */,
 				224563B92D073B210059242D /* CommonTests */,
+				224BD2B62D530BD600E32DBB /* Engine */,
+				224BD2BD2D530BD600E32DBB /* EngineTests */,
 			);
 		};
 /* End PBXProject section */
@@ -610,6 +701,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		224563B82D073B210059242D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		224BD2B52D530BD600E32DBB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		224BD2BC2D530BD600E32DBB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -663,6 +768,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		224563B62D073B210059242D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		224BD2B32D530BD600E32DBB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		224BD2BA2D530BD600E32DBB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -727,6 +846,21 @@
 			isa = PBXTargetDependency;
 			target = 224563B02D073B210059242D /* Common */;
 			targetProxy = 224563DE2D073B770059242D /* PBXContainerItemProxy */;
+		};
+		224BD2C12D530BD600E32DBB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 224BD2B62D530BD600E32DBB /* Engine */;
+			targetProxy = 224BD2C02D530BD600E32DBB /* PBXContainerItemProxy */;
+		};
+		224BD2C32D530BD600E32DBB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 22B378C72CF92D4B000B72E9 /* VideoFactory */;
+			targetProxy = 224BD2C22D530BD600E32DBB /* PBXContainerItemProxy */;
+		};
+		224BD2C92D530BD600E32DBB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 224BD2B62D530BD600E32DBB /* Engine */;
+			targetProxy = 224BD2C82D530BD600E32DBB /* PBXContainerItemProxy */;
 		};
 		22B378DD2CF92D4C000B72E9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -975,6 +1109,151 @@
 			};
 			name = Release;
 		};
+		224BD2CD2D530BD600E32DBB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = M8AWJZ5N68;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					/opt/homebrew/include,
+					"$(PROJECT_DIR)/Engine",
+					"$(PROJECT_DIR)/Engine/audio-processor/cpp-channel/include",
+				);
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/lib,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				OTHER_LDFLAGS = (
+					"-lavformat",
+					"-lavcodec",
+					"-lavutil",
+					"-lswscale",
+					"-lswresample",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sekiroc.Engine;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_INTEROP_MODE = objc;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				USER_HEADER_SEARCH_PATHS = "";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		224BD2CE2D530BD600E32DBB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = M8AWJZ5N68;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					/opt/homebrew/include,
+					"$(PROJECT_DIR)/Engine",
+					"$(PROJECT_DIR)/Engine/audio-processor/cpp-channel/include",
+				);
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/opt/homebrew/lib,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				OTHER_LDFLAGS = (
+					"-lavformat",
+					"-lavcodec",
+					"-lavutil",
+					"-lswscale",
+					"-lswresample",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.sekiroc.Engine;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_INTEROP_MODE = objc;
+				SWIFT_VERSION = 5.0;
+				USER_HEADER_SEARCH_PATHS = "";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		224BD2D12D530BD600E32DBB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M8AWJZ5N68;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sekiroc.EngineTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VideoFactory.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/VideoFactory";
+			};
+			name = Debug;
+		};
+		224BD2D22D530BD600E32DBB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = M8AWJZ5N68;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sekiroc.EngineTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VideoFactory.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/VideoFactory";
+			};
+			name = Release;
+		};
 		22B378ED2CF92D4C000B72E9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1030,11 +1309,13 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c++";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OBJC_INTEROP_MODE = objcxx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -1088,10 +1369,12 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.1;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c++";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OBJC_INTEROP_MODE = objcxx;
 			};
 			name = Release;
 		};
@@ -1137,6 +1420,7 @@
 					"$(PROJECT_DIR)/ExternalTools/whis-engine/_internal/ctranslate2/.dylibs",
 					"$(PROJECT_DIR)/ExternalTools/whis-engine/_internal/onnxruntime/capi",
 					"$(PROJECT_DIR)/ExternalTools/whis-engine/_internal/tokenizers",
+					"$(PROJECT_DIR)/VideoFactory/audio-processor/FFmpeg-7.1/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
@@ -1145,7 +1429,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "VideoFactory/Bridge/VideoFactory-Bridging-Header.h";
-				SWIFT_OBJC_INTEROP_MODE = objcxx;
+				SWIFT_OBJC_INTEROP_MODE = objc;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -1193,6 +1477,7 @@
 					"$(PROJECT_DIR)/ExternalTools/whis-engine/_internal/ctranslate2/.dylibs",
 					"$(PROJECT_DIR)/ExternalTools/whis-engine/_internal/onnxruntime/capi",
 					"$(PROJECT_DIR)/ExternalTools/whis-engine/_internal/tokenizers",
+					"$(PROJECT_DIR)/VideoFactory/audio-processor/FFmpeg-7.1/lib",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
@@ -1201,7 +1486,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "VideoFactory/Bridge/VideoFactory-Bridging-Header.h";
-				SWIFT_OBJC_INTEROP_MODE = objcxx;
+				SWIFT_OBJC_INTEROP_MODE = objc;
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -1313,6 +1598,24 @@
 			buildConfigurations = (
 				224563CD2D073B210059242D /* Debug */,
 				224563CE2D073B210059242D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		224BD2CC2D530BD600E32DBB /* Build configuration list for PBXNativeTarget "Engine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				224BD2CD2D530BD600E32DBB /* Debug */,
+				224BD2CE2D530BD600E32DBB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		224BD2D02D530BD600E32DBB /* Build configuration list for PBXNativeTarget "EngineTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				224BD2D12D530BD600E32DBB /* Debug */,
+				224BD2D22D530BD600E32DBB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
