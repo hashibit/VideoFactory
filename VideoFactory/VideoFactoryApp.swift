@@ -9,7 +9,6 @@ import SwiftData
 import SwiftUI
 
 import Common
-import Engine
 import UI
 
 @main
@@ -82,7 +81,10 @@ struct VideoFactoryApp: App {
                                 translateSubtitles: $subtitlesViewModel.translateSubtitles,
                                 selectedSubtitleID: $subtitlesViewModel.selectedSubtitleID,
                                 onInsertOrUpdateSubtitle: { subtitle in
-                                    subtitlesViewModel.updateOrInsertSubtitle(subtitle)
+                                    if let videoID = videoID {
+                                        subtitle.movieID = videoID
+                                        subtitlesViewModel.updateOrInsertSubtitle(subtitle)
+                                    }
                                 }
                             )
                             .frame(width: 800, height: 600)

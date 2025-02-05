@@ -8,7 +8,6 @@
 import Foundation
 
 import Common
-import Engine
 
 @MainActor
 @Observable
@@ -19,10 +18,12 @@ public class SubtitlesViewModel {
     public var translateSubtitles: [SubtitleModel] = []
 
     public var selectedSubtitleID: UUID?
+    public var currentVideoID: UUID?
 
     private let store = SubtitleStore.shared
 
     func fetchSubtitlesFromDB(videoID: UUID) {
+        currentVideoID = videoID
         print("fetch subtitles for videoID: \(String(describing: videoID))")
         let allSubtitles = SubtitleStore.shared.query(videoID: videoID)
 
